@@ -1,6 +1,6 @@
 const Jimp = require("jimp");
 const JimpImage = require("./JimpImage").default;
-const { writeImage, getAsyncProperty } = require("../functions/index").default;
+const { getAsyncProperty } = require("../functions/index").default;
 
 const KERNELS = [
   {
@@ -44,7 +44,6 @@ const KERNELS = [
     ],
   },
 ];
-const DEFAULT_TIMEOUT = 50;
 
 class Picture {
   // @public
@@ -84,8 +83,6 @@ class Picture {
       }
       this._em = new JimpImage(image);
       this.isWaiting = false;
-
-      writeImage(image);
     });
   }
 }

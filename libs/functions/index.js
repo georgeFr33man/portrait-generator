@@ -1,11 +1,4 @@
-module.exports.default = {
-  writeImage,
-  getAsyncProperty,
-};
-
-function writeImage(image, fileName = "image.png") {
-  image.write(fileName, () => {});
-}
+module.exports.default = { getAsyncProperty };
 
 function getAsyncProperty(obj, propertyName, tries) {
   return new Promise((resolve, reject) => {

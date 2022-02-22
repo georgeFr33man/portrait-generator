@@ -20,6 +20,10 @@ class JimpImage {
   }
 
   getColorWithThreshold(x, y, threshold) {}
+
+  writeImage(fileName = "image.png") {
+    this.image.write(fileName, () => {});
+  }
 }
 
 module.exports.default = JimpImage;
