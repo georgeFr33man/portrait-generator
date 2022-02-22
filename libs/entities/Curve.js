@@ -1,5 +1,3 @@
-class Curve {
-
-}
+class Curve {}
 
 module.exports.default = Curve;

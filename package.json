@@ -17,14 +17,12 @@
   },
   "homepage": "https://github.com/georgeFr33man/portrait-generator#readme",
   "dependencies": {
-    "@babel/node": "^7.16.8",
+    "fs": "^0.0.1-security",
     "jimp": "^0.16.1",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@babel/cli": "^7.17.6",
-    "@babel/core": "^7.17.5",
-    "@babel/preset-env": "^7.16.11",
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "prettier": "2.5.1"
   }
 }
