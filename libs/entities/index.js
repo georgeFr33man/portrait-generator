@@ -1,5 +1,5 @@
-const Curve = require("./Curve").default;
+const BezierCurve = require("./BezierCurve").default;
 const Picture = require("./Picture").default;
 const JimpImage = require("./JimpImage").default;
 
-module.exports.default = { Curve, Picture, JimpImage };
+module.exports.default = { BezierCurve, Picture, JimpImage };

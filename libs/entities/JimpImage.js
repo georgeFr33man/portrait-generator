@@ -1,5 +1,5 @@
-const Jimp = require("jimp");
-const { clamp } = require("../functions").mathFunctions;
+const { clamp, getPointsWithThreshold } = require("../functions").mathFunctions;
+const { white, black } = require("../utils").colors;
 const { hexAlphaToDecNoAlpha, hexToDec } = require("../functions").converters;
 
 class JimpImage {
@@ -27,18 +27,19 @@ class JimpImage {
   }
 
   getColorWithThreshold(x, y, threshold) {
-    let fromX = clamp(x - threshold, this.width),
-      toX = clamp(x + threshold, this.width),
-      fromY = clamp(y - threshold, this.height),
-      toY = clamp(y + threshold, this.height),
-      sum = 0,
-      iterations = Math.abs(toX - fromX) * Math.abs(toY - fromY);
+    let { xMin, xMax, yMin, yMax } = getPointsWithThreshold(
+      x,
+      y,
+      threshold,
+      this.width,
+      this.height
+    );
+    let sum = 0,
+      iterations = Math.abs(xMin - xMax) * Math.abs(yMin - yMax);
 
-    for (let xx = fromX; xx <= toX; xx++) {
-      for (let yy = fromY; yy <= toY; yy++) {
-        sum += hexAlphaToDecNoAlpha(this.getColorOnPosition(xx, yy));
-      }
-    }
+    this.image.scan(xMin, yMin, xMax, yMax, (xx, yy) => {
+      sum += hexAlphaToDecNoAlpha(this.getColorOnPosition(xx, yy));
+    });
 
     return parseInt((sum / iterations).toString());
   }
@@ -49,11 +50,41 @@ class JimpImage {
     this.#scan((x, y) => {
       let colorVal = hexAlphaToDecNoAlpha(this.getColorOnPosition(x, y));
       if (colorVal < whiteVal) {
-        this.image.setPixelColor(Jimp.rgbaToInt(0, 0, 0, 255), x, y);
+        this.drawPoint({ x, y });
       } else {
-        this.image.setPixelColor(Jimp.rgbaToInt(255, 255, 255, 255), x, y);
+        this.drawPoint({ x, y, color: white });
       }
     });
+  }
+
+  drawPoint({ x, y, color = black, thickness = 1 }) {
+    if (thickness > 1) {
+      let { xMin, xMax, yMin, yMax } = getPointsWithThreshold(
+        { x, y },
+        thickness / 2,
+        this.width,
+        this.height
+      );
+      this.image.scan(
+        xMin,
+        yMin,
+        Math.abs(xMax - xMin),
+        Math.abs(yMax - yMin),
+        (xx, yy) => {
+          this.image.setPixelColor(color, xx, yy);
+        }
+      );
+    } else {
+      this.image.setPixelColor(color, x, y);
+    }
+  }
+
+  drawBezier({ bezierCurve, points = 10, color = white, thickness = 1 }) {
+    let step = 1 / points;
+    for (let t = 0; t < 1; t += step) {
+      let [x, y] = bezierCurve.getPoint(t);
+      this.drawPoint({ x, y, color, thickness });
+    }
   }
 
   writeImage(fileName = "image.png") {
