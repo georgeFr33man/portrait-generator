@@ -74,6 +74,7 @@ class JimpImage {
         ),
         diffX = Math.abs(xMax - xMin),
         diffY = Math.abs(yMax - yMin);
+
       this.image.scan(xMin, yMin, diffX, diffY, (xx, yy) => {
         if (lerpColor) {
           let t =

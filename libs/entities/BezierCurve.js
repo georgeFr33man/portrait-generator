@@ -2,6 +2,7 @@ const bezier = require("bezier-curve");
 const { rand } = require("./../functions/mathFunctions").default;
 
 class BezierCurve {
+  // @public
   start;
   end;
   points;
@@ -12,13 +13,13 @@ class BezierCurve {
     this.points = points;
   }
 
-  static getRandomCurve(wMax, hMax, nofPoints = 1) {
-    let start = { x: rand(wMax), y: rand(hMax) },
-      end = { x: rand(wMax), y: rand(hMax) },
+  static getRandomCurve({ xMax, yMax, nofPoints = 1 }) {
+    let start = { x: rand(xMax), y: rand(yMax) },
+      end = { x: rand(xMax), y: rand(yMax) },
       points = [];
 
     for (let i = 0; i < nofPoints; i++) {
-      points.push({ x: rand(wMax), y: rand(hMax) });
+      points.push({ x: rand(xMax), y: rand(yMax) });
     }
 
     return new BezierCurve(start, end, points);
