@@ -1,5 +1,7 @@
-const { clamp, getPointsWithThreshold } = require("../functions").mathFunctions;
-const { white, black } = require("../utils").colors;
+const Jimp = require("jimp");
+const { clamp, getPointsWithThreshold, lerp } =
+  require("../functions").mathFunctions;
+const { white, black, transparent, getWithAlpha } = require("../utils").colors;
 const { hexAlphaToDecNoAlpha, hexToDec } = require("../functions").converters;
 
 class JimpImage {
@@ -9,24 +11,29 @@ class JimpImage {
   // @public
   width;
   height;
+  scale;
 
-  constructor(jimp) {
+  constructor(jimp, scale = 1) {
     this.#jimp = jimp;
     this.width = jimp.getWidth();
     this.height = jimp.getHeight();
+    this.scale = scale;
   }
 
   get image() {
     return this.#jimp;
   }
 
-  getColorOnPosition(x, y) {
+  getColorOnPosition(x, y, threshold = null) {
+    if (threshold !== null) {
+      return this.#getColorWithThreshold(x, y, threshold);
+    }
     return this.#jimp.getPixelColor(x, y, function (err, color) {
       return color;
     });
   }
 
-  getColorWithThreshold(x, y, threshold) {
+  #getColorWithThreshold(x, y, threshold) {
     let { xMin, xMax, yMin, yMax } = getPointsWithThreshold(
       x,
       y,
@@ -57,33 +64,47 @@ class JimpImage {
     });
   }
 
-  drawPoint({ x, y, color = black, thickness = 1 }) {
+  drawPoint({ x, y, color = black, thickness = 1, lerpColor = false }) {
     if (thickness > 1) {
       let { xMin, xMax, yMin, yMax } = getPointsWithThreshold(
-        { x, y },
-        thickness / 2,
-        this.width,
-        this.height
-      );
-      this.image.scan(
-        xMin,
-        yMin,
-        Math.abs(xMax - xMin),
-        Math.abs(yMax - yMin),
-        (xx, yy) => {
-          this.image.setPixelColor(color, xx, yy);
+          { x, y },
+          thickness / 2,
+          this.width,
+          this.height
+        ),
+        diffX = Math.abs(xMax - xMin),
+        diffY = Math.abs(yMax - yMin);
+      this.image.scan(xMin, yMin, diffX, diffY, (xx, yy) => {
+        if (lerpColor) {
+          let t =
+            1 - (Math.abs(x - xx) / diffX) * (1 - Math.abs(y - yy) / diffY);
+          let alpha = lerp(0, 255, t);
+          color = getWithAlpha(color, alpha);
         }
-      );
+        this.image.setPixelColor(color, xx, yy);
+      });
     } else {
       this.image.setPixelColor(color, x, y);
     }
   }
 
-  drawBezier({ bezierCurve, points = 10, color = white, thickness = 1 }) {
+  fillColor(color) {
+    this.#scan((x, y) => {
+      this.drawPoint({ x, y, color });
+    });
+  }
+
+  drawBezier({
+    bezierCurve,
+    points = 10,
+    color = white,
+    thickness = 1,
+    lerpColor = false,
+  }) {
     let step = 1 / points;
     for (let t = 0; t < 1; t += step) {
       let [x, y] = bezierCurve.getPoint(t);
-      this.drawPoint({ x, y, color, thickness });
+      this.drawPoint({ x, y, color, thickness, lerpColor });
     }
   }
 
@@ -91,6 +112,18 @@ class JimpImage {
     return this.image.write(fileName, (err, jimp) => {
       return jimp;
     });
+  }
+
+  static createFromMatrix(edgeMatrix, scale = 1) {
+    return new JimpImage(
+      new Jimp(
+        edgeMatrix.width * scale,
+        edgeMatrix.height * scale,
+        transparent,
+        (err, image) => image
+      ),
+      scale
+    );
   }
 
   #scan(fn) {
