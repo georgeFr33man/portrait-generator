@@ -1,6 +1,6 @@
 const Jimp = require("jimp");
 const JimpImage = require("./JimpImage").default;
-const { getAsyncProperty } = require("../functions/index").default;
+const { getAsyncProperty } = require("../functions").misc;
 
 const KERNELS = [
   {

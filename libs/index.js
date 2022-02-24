@@ -1,8 +1,11 @@
 /* Entities */
-const curve = require("./entities/Curve").default;
-const picture = require("./entities/Picture").default;
-module.exports.entities = { curve, picture };
+const entities = require("./entities").default;
+module.exports.entities = entities;
 
 /* Functions */
-const functions = require("./functions/index").default;
-module.exports.functions = { functions };
+const functions = require("./functions").default;
+module.exports.functions = functions;
+
+/* Utils */
+const utils = require("./utils").default;
+module.exports.utils = utils;

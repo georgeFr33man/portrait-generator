@@ -1,4 +1,5 @@
-const entities = require("./libs/index").entities;
-const functions = require("./libs/index").functions;
+const entities = require("./libs").entities;
+const functions = require("./libs").functions;
+const utils = require("./libs").utils;
 
-exports.GPG = { entities, functions };
+exports.GPG = { entities, functions, utils };

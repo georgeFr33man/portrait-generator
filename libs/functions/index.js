@@ -1,15 +1,9 @@
-module.exports.default = { getAsyncProperty };
+const mathFunctions = require("./mathFunctions").default;
+const misc = require("./misc").default;
+const converters = require("./converters").default;
 
-function getAsyncProperty(obj, propertyName, tries) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (tries >= 1000 / 50) {
-        reject("Rejected because of timeout.");
-      } else if (obj.isWaiting && !obj[propertyName]) {
-        resolve(getAsyncProperty(obj, propertyName, ++tries));
-      } else {
-        resolve(obj[propertyName]);
-      }
-    }, 50);
-  });
-}
+module.exports.default = { misc, converters, mathFunctions };
+
+module.exports.misc = misc;
+module.exports.mathFunctions = mathFunctions;
+module.exports.converters = converters;
