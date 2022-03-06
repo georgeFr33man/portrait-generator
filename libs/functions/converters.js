@@ -6,6 +6,15 @@ module.exports.default = {
   hexToDec,
 };
 
+module.exports.hex = {
+  decToHex,
+  decToHexAlpha,
+  hexAlphaToHex,
+  hexAlphaToDecNoAlpha,
+  hexToDec,
+}
+
+
 function decToHex(dec) {
   return parseInt(dec).toString(16);
 }

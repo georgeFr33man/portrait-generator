@@ -1,16 +1,18 @@
-const Picture = require("../entities/Picture").default;
+const BezierCurve = require("../entities/BezierCurve").default;
 
 class Agent
 {
     // @private
     #bezierCurve;
     #fitnessScore;
+    #geneticRepresentation;
 
     /**
-     * @param {Picture} [bezierCurve]
+     * @param {BezierCurve} [bezierCurve]
      */
     constructor(bezierCurve) {
         this.#bezierCurve = bezierCurve;
+        this.#buildGeneticRepresentation();
     }
 
     /**
@@ -23,7 +25,9 @@ class Agent
      */
     set fitnessScore(val) {this.#fitnessScore = val;}
 
+    #buildGeneticRepresentation() {
 
+    }
 }
 
 module.exports.default = Agent;

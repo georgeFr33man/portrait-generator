@@ -143,13 +143,18 @@ class JimpImage {
     bezierCurve,
     points = 10,
     color = white,
-    thickness = 1,
     lerpColor = false,
   }) {
     let step = 1 / points;
     for (let t = 0; t < 1; t += step) {
       let [x, y] = bezierCurve.getPoint(t);
-      this.drawPoint({ x, y, color, thickness, lerpColor });
+      this.drawPoint({
+        x,
+        y,
+        color,
+        thickness: bezierCurve.thickness,
+        lerpColor
+      });
     }
   }
 

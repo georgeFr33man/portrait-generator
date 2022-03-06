@@ -6,11 +6,24 @@ class BezierCurve {
   start;
   end;
   points;
+  thickness;
 
-  constructor(start = { x: 0, y: 0 }, end = { x: 0, y: 0 }, points = []) {
+  /**
+   * @param {int} [start]
+   * @param {int} [end]
+   * @param {array} [points]
+   * @param {int} [thickness]
+   */
+  constructor(
+      start = { x: 0, y: 0 },
+      end = { x: 0, y: 0 },
+      points = [],
+      thickness = 1
+  ) {
     this.start = start;
     this.end = end;
     this.points = points;
+    this.thickness = thickness;
   }
 
   /**
