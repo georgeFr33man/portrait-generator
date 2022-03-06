@@ -61,12 +61,12 @@ class Agent
      * @param {string} [geneticCode]
      */
     #updateBezierCurve(geneticCode) {
-        let allels = geneticCode.split(' '),
-            numberOfChunks = allels.length / ALLELE_LENGTH,
+        let alleles = geneticCode.split(' '),
+            numberOfChunks = alleles.length / ALLELE_LENGTH,
             chunks = [];
 
         for (let i = 0, o = 0; i < numberOfChunks; i++, o += ALLELE_LENGTH) {
-            chunks[i] = allels.substring(o, ALLELE_LENGTH);
+            chunks[i] = alleles.substring(o, ALLELE_LENGTH);
         }
 
         chunks.map(el => binaryToDec(el));
