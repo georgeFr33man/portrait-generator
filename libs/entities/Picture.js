@@ -52,6 +52,9 @@ class Picture {
   imageUrl;
   isWaiting = false;
 
+  /**
+   * @param {string} [imageUrl]
+   */
   constructor(imageUrl) {
     this.imageUrl = imageUrl;
     this.init();
@@ -61,10 +64,16 @@ class Picture {
     this.#createEdgeMatrix();
   }
 
+  /**
+   * @returns {Promise}
+   */
   get edgeMatrix() {
     return getAsyncProperty(this, "_em").catch(() => null);
   }
 
+  /**
+   * @returns {Promise}
+   */
   get originalImage() {
     return getAsyncProperty(this, "_oi").catch(() => null);
   }

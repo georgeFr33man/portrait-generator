@@ -13,6 +13,12 @@ class BezierCurve {
     this.points = points;
   }
 
+  /**
+   * @param {int} [xMax]
+   * @param {int} [yMax]
+   * @param {int} [nofPoints]
+   * @returns {BezierCurve}
+   */
   static getRandomCurve({ xMax, yMax, nofPoints = 1 }) {
     let start = { x: rand(xMax), y: rand(yMax) },
       end = { x: rand(xMax), y: rand(yMax) },
@@ -25,6 +31,10 @@ class BezierCurve {
     return new BezierCurve(start, end, points);
   }
 
+  /**
+   * @param {number} [t] Range (0 - 1).
+   * @returns {Object} {x: number, y: number}
+   */
   getPoint(t) {
     let points = [];
     this.points.forEach((p) => points.push([p.x, p.y]));

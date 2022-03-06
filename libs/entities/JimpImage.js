@@ -13,6 +13,10 @@ class JimpImage {
   height;
   scale;
 
+  /**
+   * @param {Jimp} [jimp]
+   * @param {number} [scale]
+   */
   constructor(jimp, scale = 1) {
     this.#jimp = jimp;
     this.width = jimp.getWidth();
@@ -20,19 +24,37 @@ class JimpImage {
     this.scale = scale;
   }
 
+  /**
+   * @returns {Jimp}
+   */
   get image() {
     return this.#jimp;
   }
 
+  /**
+   * Returns HEX-Alpha color value from [X, Y] position.
+   * @param {int} [x]
+   * @param {int} [y]
+   * @param {number|null} [threshold]
+   * @returns {number}
+   */
   getColorOnPosition(x, y, threshold = null) {
     if (threshold !== null) {
       return this.#getColorWithThreshold(x, y, threshold);
     }
+
     return this.#jimp.getPixelColor(x, y, function (err, color) {
       return color;
     });
   }
 
+  /**
+   * Returns average HEX color value from [X, Y] +/- threshold.
+   * @param {int} [x]
+   * @param {int} [y]
+   * @param {int} [threshold]
+   * @returns {number}
+   */
   #getColorWithThreshold(x, y, threshold) {
     let { xMin, xMax, yMin, yMax } = getPointsWithThreshold(
       x,
@@ -51,6 +73,10 @@ class JimpImage {
     return parseInt((sum / iterations).toString());
   }
 
+  /**
+   * Returns image flatten to black and white colors.
+   * @param {number} [precision]
+   */
   flattenImage(precision = 1) {
     let whiteVal = clamp(precision, 1) * hexToDec("FFFFFF");
 
@@ -64,6 +90,13 @@ class JimpImage {
     });
   }
 
+  /**
+   * @param {int} [x]
+   * @param {int} [y]
+   * @param {int} [color]
+   * @param {number} [thickness]
+   * @param {boolean} [lerpColor]
+   */
   drawPoint({ x, y, color = black, thickness = 1, lerpColor = false }) {
     if (thickness > 1) {
       let { xMin, xMax, yMin, yMax } = getPointsWithThreshold(
@@ -89,12 +122,23 @@ class JimpImage {
     }
   }
 
+  /**
+   * @param {int} [color]
+   */
   fillColor(color) {
     this.#scan((x, y) => {
       this.drawPoint({ x, y, color });
     });
   }
 
+  /**
+   * Draws Bezier curve.
+   * @param {BezierCurve} [bezierCurve]
+   * @param {int} [points]
+   * @param {int} [color]
+   * @param {number} [thickness]
+   * @param {boolean} [lerpColor]
+   */
   drawBezier({
     bezierCurve,
     points = 10,
@@ -109,12 +153,21 @@ class JimpImage {
     }
   }
 
+  /**
+   * @param {string} [fileName]
+   * @returns {Jimp}
+   */
   writeImage(fileName = "image.png") {
     return this.image.write(fileName, (err, jimp) => {
       return jimp;
     });
   }
 
+  /**
+   * @param {JimpImage} [edgeMatrix]
+   * @param {number} [scale]
+   * @returns {JimpImage}
+   */
   static createFromMatrix(edgeMatrix, scale = 1) {
     return new JimpImage(
       new Jimp(
@@ -127,6 +180,10 @@ class JimpImage {
     );
   }
 
+  /**
+   * Performs given function on every pixel of the image.
+   * @param {Function} [fn]
+   */
   #scan(fn) {
     this.image.scan(0, 0, this.width, this.height, fn);
   }
