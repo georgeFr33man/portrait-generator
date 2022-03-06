@@ -4,6 +4,8 @@ module.exports.default = {
   hexAlphaToHex,
   hexAlphaToDecNoAlpha,
   hexToDec,
+  binaryToDec,
+  decToBinary
 };
 
 module.exports.hex = {
@@ -14,7 +16,12 @@ module.exports.hex = {
   hexToDec,
 }
 
+module.exports.binary = {
+  binaryToDec,
+  decToBinary
+}
 
+//region HEX
 function decToHex(dec) {
   return parseInt(dec).toString(16);
 }
@@ -34,3 +41,24 @@ function hexAlphaToDecNoAlpha(hexAlpha) {
 function hexToDec(hex) {
   return hex.length ? parseInt(hex, 16) : 0;
 }
+//endregion
+
+//region BINARY
+function decToBinary(dec, length) {
+  let binary = parseInt(dec).toString(2);
+  if (binary.length < length) {
+    let diff = length - binary.length,
+        prepend = '';
+        for (let i = 0; i < diff; i++) {
+          prepend += '0';
+        }
+    binary = prepend + binary;
+  }
+
+  return binary
+}
+function binaryToDec(binary) {
+  parseInt(binary, 2);
+}
+
+//endregion

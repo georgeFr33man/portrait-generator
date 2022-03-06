@@ -58,6 +58,13 @@ class BezierCurve {
       [this.end.x, this.end.y],
     ]);
   }
+
+  setProperties({start = 0, end = 0, thickness = 1, points = []}) {
+    this.start = start;
+    this.end = end;
+    this.thickness = thickness;
+    this.points = points;
+  }
 }
 
 module.exports.default = BezierCurve;
