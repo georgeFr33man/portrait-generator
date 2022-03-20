@@ -19,6 +19,7 @@
   "dependencies": {
     "bezier-curve": "^1.0.0",
     "fs": "^0.0.1-security",
+    "interface": "^1.2.1",
     "jimp": "^0.16.1",
     "lodash": "^4.17.21"
   },

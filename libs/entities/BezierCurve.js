@@ -63,18 +63,18 @@ class BezierCurve {
   /**
    * @param {{x: number, y: number}}[start]
    * @param {{x: number, y: number}}[end]
-   * @param {int}[thickness]
+   * @param {int|null}[thickness]
    * @param {[{x: number, y: number}]}[points]
    */
   setProperties({
     start = { x: 0, y: 0 },
     end = { x: 0, y: 0 },
-    thickness = 1,
+    thickness = null,
     points = [],
   }) {
     this.start = start;
     this.end = end;
-    this.thickness = thickness;
+    this.thickness = thickness ?? this.thickness;
     this.points = points;
   }
 }

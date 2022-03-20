@@ -1,4 +1,10 @@
-module.exports.default = { clamp, rand, getPointsWithThreshold, lerp };
+module.exports.default = {
+  clamp,
+  rand,
+  getPointsWithThreshold,
+  lerp,
+  normalize,
+};
 
 function clamp(value, max) {
   if (value < 0) {
@@ -17,6 +23,20 @@ function rand(max, min = 0) {
 
 function lerp(start, end, t) {
   return start + (end - start) * clamp(t, 1);
+}
+
+/**
+ *
+ * @param {number}[value]
+ * @param {number}[max]
+ * @param {number}[min]
+ * @return {number}
+ */
+function normalize(value, max, min) {
+  if (max === min) {
+    return 1;
+  }
+  return (value - min) / (max - min);
 }
 
 function getPointsWithThreshold(point, threshold, xMax, yMax) {

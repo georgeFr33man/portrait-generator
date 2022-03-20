@@ -133,28 +133,28 @@ class JimpImage {
 
   /**
    * Draws Bezier curve.
-   * @param {BezierCurve} [bezierCurve]
-   * @param {int} [points]
-   * @param {int} [color]
-   * @param {number} [thickness]
-   * @param {boolean} [lerpColor]
+   * @param {BezierCurve}[bezierCurve]
+   * @param {int}[points]
+   * @param {int}[color]
+   * @param {boolean}[lerpColor]
    */
-  drawBezier({
-    bezierCurve,
-    points = 10,
-    color = white,
-    lerpColor = false,
-  }) {
+  drawBezier({ bezierCurve, points = 10, color = white, lerpColor = false }) {
     let step = 1 / points;
     for (let t = 0; t < 1; t += step) {
+      let lastStepTime = Date.now();
+      console.log("Step: " + parseInt(t * 100) + "%");
       let [x, y] = bezierCurve.getPoint(t);
       this.drawPoint({
         x,
         y,
         color,
         thickness: bezierCurve.thickness,
-        lerpColor
+        lerpColor,
       });
+
+      if (Date.now() - lastStepTime > 2) {
+        step *= 10;
+      }
     }
   }
 
