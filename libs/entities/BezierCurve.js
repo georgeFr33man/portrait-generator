@@ -15,10 +15,10 @@ class BezierCurve {
    * @param {int} [thickness]
    */
   constructor(
-      start = { x: 0, y: 0 },
-      end = { x: 0, y: 0 },
-      points = [],
-      thickness = 1
+    start = { x: 0, y: 0 },
+    end = { x: 0, y: 0 },
+    points = [],
+    thickness = 1
   ) {
     this.start = start;
     this.end = end;
@@ -30,9 +30,10 @@ class BezierCurve {
    * @param {int} [xMax]
    * @param {int} [yMax]
    * @param {int} [nofPoints]
+   * @param thickness
    * @returns {BezierCurve}
    */
-  static getRandomCurve({ xMax, yMax, nofPoints = 1 }) {
+  static getRandomCurve({ xMax, yMax, nofPoints = 1, thickness = 1 }) {
     let start = { x: rand(xMax), y: rand(yMax) },
       end = { x: rand(xMax), y: rand(yMax) },
       points = [];
@@ -41,7 +42,7 @@ class BezierCurve {
       points.push({ x: rand(xMax), y: rand(yMax) });
     }
 
-    return new BezierCurve(start, end, points);
+    return new BezierCurve(start, end, points, thickness);
   }
 
   /**
@@ -59,7 +60,18 @@ class BezierCurve {
     ]);
   }
 
-  setProperties({start = 0, end = 0, thickness = 1, points = []}) {
+  /**
+   * @param {{x: number, y: number}}[start]
+   * @param {{x: number, y: number}}[end]
+   * @param {int}[thickness]
+   * @param {[{x: number, y: number}]}[points]
+   */
+  setProperties({
+    start = { x: 0, y: 0 },
+    end = { x: 0, y: 0 },
+    thickness = 1,
+    points = [],
+  }) {
     this.start = start;
     this.end = end;
     this.thickness = thickness;

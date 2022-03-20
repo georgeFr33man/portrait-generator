@@ -1,3 +1,7 @@
+/* Genetics */
+const genetics = require("./genetics").default;
+module.exports.genetics = genetics;
+
 /* Entities */
 const entities = require("./entities").default;
 module.exports.entities = entities;
