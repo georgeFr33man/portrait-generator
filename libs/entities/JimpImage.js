@@ -141,8 +141,6 @@ class JimpImage {
   drawBezier({ bezierCurve, points = 10, color = white, lerpColor = false }) {
     let step = 1 / points;
     for (let t = 0; t < 1; t += step) {
-      let lastStepTime = Date.now();
-      console.log("Step: " + parseInt(t * 100) + "%");
       let [x, y] = bezierCurve.getPoint(t);
       this.drawPoint({
         x,
@@ -151,10 +149,6 @@ class JimpImage {
         thickness: bezierCurve.thickness,
         lerpColor,
       });
-
-      if (Date.now() - lastStepTime > 2) {
-        step *= 10;
-      }
     }
   }
 

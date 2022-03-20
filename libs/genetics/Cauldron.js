@@ -2,7 +2,7 @@ const Agent = require("./Agent").default;
 const JimpImage = require("../entities/JimpImage").default;
 const BezierCurve = require("../entities").default.BezierCurve;
 const { rand, normalize } = require("../functions/mathFunctions").default;
-const { createString, replaceStringFromIndex } =
+const { replaceStringFromIndex } =
   require("../functions/stringFunctions").default;
 const { white } = require("../utils/colors").default;
 const { debug } = require("../utils/logger").default;
@@ -28,12 +28,7 @@ class Cauldron {
    * @param {number}[mutationChance]
    * @param {BaseFitnessFunction}[fitnessFunctions]
    */
-  constructor(
-    agents,
-    crossOverChance = 0.3,
-    mutationChance = 0.1,
-    ...fitnessFunctions
-  ) {
+  constructor(agents, crossOverChance = 0.3, mutationChance = 0.1) {
     this.agents = agents;
     this.crossOverChance = crossOverChance;
     this.mutationChance = mutationChance;
@@ -110,13 +105,14 @@ class Cauldron {
 
   mutate(agent) {
     let gr = agent.geneticRepresentation.split("");
-    gr = gr.map((bit) => {
-      if (rand(1, 0) <= this.mutationChance) {
-        return bit === "0" ? "1" : "0";
-      }
-
-      return bit;
-    });
+    // gr = gr.map((bit) => {
+    //   if (rand(1, 0) <= this.mutationChance) {
+    //     return bit === "0" ? "1" : "0";
+    //   }
+    //
+    //   return bit;
+    // });
+    // todo: better mutation
 
     agent.geneticRepresentation = gr.join("");
   }
@@ -135,16 +131,8 @@ class Cauldron {
 
     for (let k = 0; k < cuttingPoints.length; k++) {
       let cuttingPoint = cuttingPoints[k];
-      let sliceLen = maxCuttingPoint - cuttingPoint;
       let cut1 = gr1.slice(cuttingPoint);
       let cut2 = gr2.slice(cuttingPoint);
-
-      if (cut1.length < sliceLen) {
-        cut1 = createString("0", sliceLen - cut1.length) + cut1;
-      }
-      if (cut2.length < sliceLen) {
-        cut2 = createString("0", sliceLen - cut2.length) + cut2;
-      }
 
       gr1 = replaceStringFromIndex(gr1, cut2, cuttingPoint);
       gr2 = replaceStringFromIndex(gr2, cut1, cuttingPoint);
@@ -206,8 +194,7 @@ class Cauldron {
    * @param {boolean}[lerpColor]
    */
   spill({ image, points = 1000, color = white, lerpColor = true }) {
-    this.agents.forEach((agent, index) => {
-      debug("Agent: " + index / (this.agents.length - 1) + "%");
+    this.agents.forEach((agent) => {
       image.drawBezier({
         bezierCurve: agent.bezierCurve,
         points,

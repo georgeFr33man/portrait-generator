@@ -68,7 +68,7 @@ class Agent {
       points.push(decToBinary(point.y, ALLELE_LENGTH));
     });
 
-    this.geneticRepresentation =
+    this.#geneticRepresentation =
       // startX + startY + endX + endY + thickness + points.join("");
       startX + startY + endX + endY + points.join("");
   }
