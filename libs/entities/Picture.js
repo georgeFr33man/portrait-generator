@@ -83,13 +83,13 @@ class Picture {
     const jimp = Jimp.read(this.imageUrl);
 
     jimp.then((image) => {
-      this._oi = image;
+      this._oi = new JimpImage(image);
 
-      image.greyscale();
-      image.contrast(1);
-      for (let kernel of KERNELS) {
-        image.convolute(kernel.kernel);
-      }
+      // image.greyscale();
+      // image.contrast(1);
+      // for (let kernel of KERNELS) {
+      //   image.convolute(kernel.kernel);
+      // }
       this._em = new JimpImage(image);
       this.isWaiting = false;
     });

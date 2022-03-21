@@ -4,6 +4,7 @@ module.exports.default = {
   getPointsWithThreshold,
   lerp,
   normalize,
+  randInt,
 };
 
 function clamp(value, max) {
@@ -19,6 +20,15 @@ function clamp(value, max) {
 
 function rand(max, min = 0) {
   return Math.random() * (max - min) + min;
+}
+
+/**
+ * @param {int}[max]
+ * @param {int}[min]
+ * @return {number}
+ */
+function randInt(max, min = 0) {
+  return parseInt(Math.floor(Math.random() * (max - min) + min).toString());
 }
 
 function lerp(start, end, t) {
@@ -41,9 +51,9 @@ function normalize(value, max, min) {
 
 function getPointsWithThreshold(point, threshold, xMax, yMax) {
   return {
-    xMin: clamp(point.x - threshold, xMax),
-    xMax: clamp(point.x + threshold, xMax),
-    yMin: clamp(point.y - threshold, yMax),
-    yMax: clamp(point.y + threshold, yMax),
+    xMin: Math.round(clamp(point.x - threshold, xMax)),
+    xMax: Math.round(clamp(point.x + threshold, xMax)),
+    yMin: Math.round(clamp(point.y - threshold, yMax)),
+    yMax: Math.round(clamp(point.y + threshold, yMax)),
   };
 }

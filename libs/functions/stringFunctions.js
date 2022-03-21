@@ -1,6 +1,4 @@
-const { error } = require("./../utils/logger");
-
-module.exports.default = { createString, replaceStringFromIndex };
+module.exports.default = { createString, replaceStringFromIndex, chunkString };
 
 /**
  * @param {string}[char]
@@ -32,4 +30,15 @@ function replaceStringFromIndex(str, replaceWith, startingAt) {
   newStr += str.slice(startingAt + replaceWith.length, str.length);
 
   return newStr;
+}
+
+function chunkString(str, size) {
+  let numberOfChunks = str.length / size,
+    chunks = [];
+
+  for (let i = 0; i < numberOfChunks; i++) {
+    chunks[i] = str.substring(i * size, i * size + size);
+  }
+
+  return chunks;
 }

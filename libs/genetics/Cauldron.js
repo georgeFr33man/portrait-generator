@@ -1,12 +1,16 @@
 const Agent = require("./Agent").default;
 const JimpImage = require("../entities/JimpImage").default;
 const BezierCurve = require("../entities").default.BezierCurve;
-const { rand, normalize } = require("../functions/mathFunctions").default;
+const { rand, normalize, randInt } =
+  require("../functions/mathFunctions").default;
 const { replaceStringFromIndex } =
   require("../functions/stringFunctions").default;
-const { white } = require("../utils/colors").default;
-const { debug } = require("../utils/logger").default;
+const { white, green } = require("../utils/colors").default;
+const { debug, loading } = require("../utils/logger").default;
+const { chunkString } = require("../functions/stringFunctions").default;
+const { swapIndexes } = require("../functions/misc").default;
 
+const ALLELE_LENGTH = require("./config").default.ALLELE_LENGTH;
 const DRAW_AGENTS_MAX_TRIES = require("./config").default.DRAW_AGENTS_MAX_TRIES;
 const DRAW_AGENT_DEFAULT_CHANCE =
   require("./config").default.DRAW_AGENT_DEFAULT_CHANCE;
@@ -49,10 +53,12 @@ class Cauldron {
       while (elapsedTime < maxMixingTime) {
         this.mix({ edgeMatrix, fitnessFunction });
         elapsedTime = Date.now() - start;
+        loading((elapsedTime / maxMixingTime) * 100);
       }
     } else {
       for (let i = 0; i < nofMixes; i++) {
         this.mix({ edgeMatrix, fitnessFunction });
+        loading(((i + 1) / nofMixes) * 100);
       }
     }
   }
@@ -82,15 +88,16 @@ class Cauldron {
       agent2Index = null;
     this.agents.forEach((agent, index) => {
       if (!usedIndexes.includes(index)) {
-        usedIndexes.push(index);
-
         // select agent for crossing over with
         [agent2, agent2Index] = this.#drawAgent(usedIndexes);
-        usedIndexes.push(agent2Index);
-
         // do crossover
-        if (rand(1, 0) <= this.crossOverChance) {
-          this.crossover(agent, agent2);
+        if (agent && agent2) {
+          let doCrossover = rand(1, 0) < this.crossOverChance;
+          if (doCrossover) {
+            usedIndexes.push(index);
+            usedIndexes.push(agent2Index);
+            this.crossover(agent, agent2);
+          }
         }
 
         // clear out.
@@ -101,20 +108,40 @@ class Cauldron {
 
     // Mutations
     this.agents.forEach((agent) => this.mutate(agent));
+    this.agents.forEach((agent) => this.mutateByBits(agent));
+  }
+
+  mutateByBits(agent) {
+    let gr = agent.geneticRepresentation.split("");
+    gr.map((bit) => {
+      // do mutation
+      let factor = agent.fitnessScore !== 0 ? 1 / agent.fitnessScore : Infinity;
+      let doMutation = rand(1, 0) < this.mutationChance * factor;
+      if (doMutation) {
+        return bit === "0" ? "1" : "0";
+      }
+
+      return bit;
+    });
+
+    agent.geneticRepresentation = gr.join("");
   }
 
   mutate(agent) {
-    let gr = agent.geneticRepresentation.split("");
-    // gr = gr.map((bit) => {
-    //   if (rand(1, 0) <= this.mutationChance) {
-    //     return bit === "0" ? "1" : "0";
-    //   }
-    //
-    //   return bit;
-    // });
-    // todo: better mutation
+    let gr = agent.geneticRepresentation;
+    let chunks = chunkString(gr, ALLELE_LENGTH);
 
-    agent.geneticRepresentation = gr.join("");
+    for (let i = 0; i < chunks.length; i++) {
+      // do mutation
+      let factor = agent.fitnessScore !== 0 ? 1 / agent.fitnessScore : Infinity;
+      let doMutation = rand(1, 0) < this.mutationChance * factor;
+      if (doMutation) {
+        let randIndex = randInt(chunks.length - 1);
+        chunks = swapIndexes(chunks, i, randIndex);
+      }
+    }
+
+    agent.geneticRepresentation = chunks.join("");
   }
 
   crossover(agent1, agent2) {
@@ -144,13 +171,12 @@ class Cauldron {
 
   #drawAgent(usedIndexes) {
     let tries = 0,
-      index = 1,
+      index = 0,
       drawnAgent = null,
       agent = null;
 
     // Try to draw an agent.
     while (tries < DRAW_AGENTS_MAX_TRIES && drawnAgent === null) {
-      // It can start from 1, because 0 is always used from the beginning.
       for (index; index < this.agents.length; index++) {
         if (usedIndexes.includes(index)) continue;
         agent = this.agents[index];
@@ -189,17 +215,20 @@ class Cauldron {
   /**
    *
    * @param {JimpImage}[image]
+   * @param {int}[scale]
    * @param {int}[points]
    * @param {int}[color]
    * @param {boolean}[lerpColor]
    */
-  spill({ image, points = 1000, color = white, lerpColor = true }) {
+  spill({ image, scale = 1, points = 1000, color = white, lerpColor = true }) {
     this.agents.forEach((agent) => {
+      color = agent.fitnessScore >= 1 ? green : color;
       image.drawBezier({
         bezierCurve: agent.bezierCurve,
         points,
         color,
         lerpColor,
+        scale,
       });
     });
   }

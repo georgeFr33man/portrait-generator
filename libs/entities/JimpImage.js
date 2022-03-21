@@ -57,8 +57,10 @@ class JimpImage {
    */
   #getColorWithThreshold(x, y, threshold) {
     let { xMin, xMax, yMin, yMax } = getPointsWithThreshold(
-      x,
-      y,
+      {
+        x,
+        y,
+      },
       threshold,
       this.width,
       this.height
@@ -66,9 +68,11 @@ class JimpImage {
     let sum = 0,
       iterations = Math.abs(xMin - xMax) * Math.abs(yMin - yMax);
 
-    this.image.scan(xMin, yMin, xMax, yMax, (xx, yy) => {
-      sum += hexAlphaToDecNoAlpha(this.getColorOnPosition(xx, yy));
-    });
+    for (let xx = xMin; xx <= xMax; xx++) {
+      for (let yy = yMin; yy <= yMax; yy++) {
+        sum += hexAlphaToDecNoAlpha(this.getColorOnPosition(xx, yy));
+      }
+    }
 
     return parseInt((sum / iterations).toString());
   }
@@ -134,19 +138,26 @@ class JimpImage {
   /**
    * Draws Bezier curve.
    * @param {BezierCurve}[bezierCurve]
+   * @param {int}[scale]
    * @param {int}[points]
    * @param {int}[color]
    * @param {boolean}[lerpColor]
    */
-  drawBezier({ bezierCurve, points = 10, color = white, lerpColor = false }) {
+  drawBezier({
+    bezierCurve,
+    scale = 1,
+    points = 10,
+    color = white,
+    lerpColor = false,
+  }) {
     let step = 1 / points;
     for (let t = 0; t < 1; t += step) {
       let [x, y] = bezierCurve.getPoint(t);
       this.drawPoint({
-        x,
-        y,
+        x: x * scale,
+        y: y * scale,
         color,
-        thickness: bezierCurve.thickness,
+        thickness: bezierCurve.thickness * scale,
         lerpColor,
       });
     }

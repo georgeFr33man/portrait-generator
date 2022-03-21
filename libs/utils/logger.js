@@ -1,4 +1,5 @@
-module.exports.default = { log, error, debug };
+module.exports.default = { log, error, debug, loading };
+const { createString } = require("./../functions/stringFunctions").default;
 
 const logLine = "<------------------------ LOG ------------------------>";
 const errorLine = "<----------------------- ERROR ----------------------->";
@@ -19,5 +20,15 @@ function error(message) {
 function debug(message) {
   console.debug(debugLine);
   console.debug(message);
+  console.log();
+}
+
+function loading(percentage) {
+  console.clear();
+  let loadingBar = "";
+  loadingBar += createString("▓", Math.round(percentage));
+  loadingBar += createString("░", 100 - Math.round(percentage));
+  loadingBar += "  " + Math.round(percentage * 100) / 100 + "%";
+  console.debug(loadingBar);
   console.log();
 }

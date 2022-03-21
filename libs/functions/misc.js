@@ -1,6 +1,6 @@
 const { error } = require("./../utils/logger");
 
-module.exports.default = { getAsyncProperty };
+module.exports.default = { getAsyncProperty, swapIndexes };
 
 function getAsyncProperty(obj, propertyName, tries) {
   return new Promise((resolve, reject) => {
@@ -15,4 +15,12 @@ function getAsyncProperty(obj, propertyName, tries) {
       }
     }, 50);
   });
+}
+
+function swapIndexes(arr, i1, i2) {
+  let tmp = arr[i1];
+  arr[i1] = arr[i2];
+  arr[i2] = tmp;
+
+  return arr;
 }

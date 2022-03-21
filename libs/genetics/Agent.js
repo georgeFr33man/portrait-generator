@@ -1,5 +1,6 @@
 const BezierCurve = require("../entities/BezierCurve").default;
 const { binaryToDec, decToBinary } = require("../functions/converters").binary;
+const { chunkString } = require("../functions/stringFunctions").default;
 const lodash = require("lodash");
 
 const ALLELE_LENGTH = require("./config").default.ALLELE_LENGTH;
@@ -77,16 +78,7 @@ class Agent {
    * @param {string} [geneticCode]
    */
   #updateBezierCurve(geneticCode) {
-    let numberOfChunks = geneticCode.length / ALLELE_LENGTH,
-      chunks = [];
-
-    for (let i = 0; i < numberOfChunks; i++) {
-      chunks[i] = geneticCode.substring(
-        i * ALLELE_LENGTH,
-        i * ALLELE_LENGTH + ALLELE_LENGTH
-      );
-    }
-
+    let chunks = chunkString(geneticCode, ALLELE_LENGTH);
     chunks = chunks.map((el) => binaryToDec(el));
 
     let start = { x: chunks.shift(), y: chunks.shift() },
