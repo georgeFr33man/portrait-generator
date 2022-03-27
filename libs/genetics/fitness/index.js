@@ -1,5 +1,6 @@
 /* Fitness functions */
 const EndPointFitnessFunction = require("./EndPointFitnessFunction").default;
+const AllPointsFitnessFunction = require("./AllPointsFitnessFunction").default;
 const StartPointFitnessFunction =
   require("./StartPointFitnessFunction").default;
 const MiddlePointsFitnessFunction =
@@ -12,4 +13,5 @@ module.exports.default = {
   StartPointFitnessFunction,
   MiddlePointsFitnessFunction,
   MiddlePointsMinFitnessFunction,
+  AllPointsFitnessFunction,
 };

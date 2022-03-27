@@ -8,7 +8,7 @@ class MiddlePointsMinFitnessFunction extends BaseFitnessFunction {
    * @return {number}
    */
   evaluate({ agent, edgeMatrix }) {
-    let points = 10,
+    let points = agent.bezierCurve.bezzierPoints,
       step = 1 / points,
       min = 1;
 

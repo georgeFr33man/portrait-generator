@@ -20,7 +20,6 @@ class Agent {
   }
 
   /**
-   *
    * @returns {BezierCurve}
    */
   get bezierCurve() {

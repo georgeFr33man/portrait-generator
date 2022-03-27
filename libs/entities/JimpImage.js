@@ -39,7 +39,7 @@ class JimpImage {
    * @returns {number}
    */
   getColorOnPosition(x, y, threshold = null) {
-    if (threshold !== null) {
+    if (threshold !== null && threshold > 1) {
       return this.#getColorWithThreshold(x, y, threshold);
     }
 
@@ -66,11 +66,11 @@ class JimpImage {
       this.height
     );
     let sum = 0,
-      iterations = Math.abs(xMin - xMax) * Math.abs(yMin - yMax);
+      iterations = 0;
 
     for (let xx = xMin; xx <= xMax; xx++) {
-      for (let yy = yMin; yy <= yMax; yy++) {
-        sum += hexAlphaToDecNoAlpha(this.getColorOnPosition(xx, yy));
+      for (let yy = yMin; yy <= yMax; yy++, iterations++) {
+        sum += this.getColorOnPosition(xx, yy);
       }
     }
 
@@ -143,14 +143,8 @@ class JimpImage {
    * @param {int}[color]
    * @param {boolean}[lerpColor]
    */
-  drawBezier({
-    bezierCurve,
-    scale = 1,
-    points = 10,
-    color = white,
-    lerpColor = false,
-  }) {
-    let step = 1 / points;
+  drawBezier({ bezierCurve, scale = 1, color = white, lerpColor = false }) {
+    let step = 1 / bezierCurve.bezzierPoints;
     for (let t = 0; t < 1; t += step) {
       let [x, y] = bezierCurve.getPoint(t);
       this.drawPoint({

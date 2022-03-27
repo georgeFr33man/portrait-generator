@@ -7,23 +7,27 @@ class BezierCurve {
   end;
   points;
   thickness;
+  bezzierPoints;
 
   /**
-   * @param {int} [start]
-   * @param {int} [end]
+   * @param {{x: number, y: number}} [start]
+   * @param {{x: number, y: number}} [end]
    * @param {array} [points]
    * @param {int} [thickness]
+   * @param {int} [bezzierPoints]
    */
   constructor(
     start = { x: 0, y: 0 },
     end = { x: 0, y: 0 },
     points = [],
-    thickness = 1
+    thickness = 1,
+    bezzierPoints = 100
   ) {
     this.start = start;
     this.end = end;
     this.points = points;
     this.thickness = thickness;
+    this.bezzierPoints = bezzierPoints;
   }
 
   /**
@@ -31,9 +35,16 @@ class BezierCurve {
    * @param {int} [yMax]
    * @param {int} [nofPoints]
    * @param thickness
+   * @param {int}[bezzierPoints]
    * @returns {BezierCurve}
    */
-  static getRandomCurve({ xMax, yMax, nofPoints = 1, thickness = 1 }) {
+  static getRandomCurve({
+    xMax,
+    yMax,
+    nofPoints = 1,
+    thickness = 1,
+    bezzierPoints = 100,
+  }) {
     let start = { x: rand(xMax), y: rand(yMax) },
       end = { x: rand(xMax), y: rand(yMax) },
       points = [];
@@ -42,7 +53,7 @@ class BezierCurve {
       points.push({ x: rand(xMax), y: rand(yMax) });
     }
 
-    return new BezierCurve(start, end, points, thickness);
+    return new BezierCurve(start, end, points, thickness, bezzierPoints);
   }
 
   /**

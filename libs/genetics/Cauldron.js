@@ -5,7 +5,7 @@ const { rand, normalize, randInt } =
   require("../functions/mathFunctions").default;
 const { replaceStringFromIndex } =
   require("../functions/stringFunctions").default;
-const { white, green } = require("../utils/colors").default;
+const { white, green, getRandomColor } = require("../utils/colors").default;
 const { debug, loading } = require("../utils/logger").default;
 const { chunkString } = require("../functions/stringFunctions").default;
 const { swapIndexes } = require("../functions/misc").default;
@@ -81,6 +81,7 @@ class Cauldron {
           : this.#worstAgent;
     });
     this.#normalizeAgents();
+    this.#sortAgents();
 
     // Crossover
     let usedIndexes = [];
@@ -90,12 +91,12 @@ class Cauldron {
       if (!usedIndexes.includes(index)) {
         // select agent for crossing over with
         [agent2, agent2Index] = this.#drawAgent(usedIndexes);
+        usedIndexes.push(index);
+        usedIndexes.push(agent2Index);
         // do crossover
         if (agent && agent2) {
-          let doCrossover = rand(1, 0) < this.crossOverChance;
+          let doCrossover = rand(1) < this.crossOverChance;
           if (doCrossover) {
-            usedIndexes.push(index);
-            usedIndexes.push(agent2Index);
             this.crossover(agent, agent2);
           }
         }
@@ -107,16 +108,16 @@ class Cauldron {
     });
 
     // Mutations
-    this.agents.forEach((agent) => this.mutate(agent));
-    this.agents.forEach((agent) => this.mutateByBits(agent));
+    // this.agents.forEach((agent) => this.mutate(agent));
+    // this.agents.forEach((agent) => this.mutateByBits(agent));
   }
 
   mutateByBits(agent) {
     let gr = agent.geneticRepresentation.split("");
     gr.map((bit) => {
       // do mutation
-      let factor = agent.fitnessScore !== 0 ? 1 / agent.fitnessScore : Infinity;
-      let doMutation = rand(1, 0) < this.mutationChance * factor;
+      let factor = agent.fitnessScore !== 0 ? agent.fitnessScore : 0;
+      let doMutation = rand(1) > this.mutationChance * factor;
       if (doMutation) {
         return bit === "0" ? "1" : "0";
       }
@@ -133,8 +134,8 @@ class Cauldron {
 
     for (let i = 0; i < chunks.length; i++) {
       // do mutation
-      let factor = agent.fitnessScore !== 0 ? 1 / agent.fitnessScore : Infinity;
-      let doMutation = rand(1, 0) < this.mutationChance * factor;
+      let factor = agent.fitnessScore !== 0 ? agent.fitnessScore : 0;
+      let doMutation = rand(1) > this.mutationChance * factor;
       if (doMutation) {
         let randIndex = randInt(chunks.length - 1);
         chunks = swapIndexes(chunks, i, randIndex);
@@ -180,7 +181,7 @@ class Cauldron {
       for (index; index < this.agents.length; index++) {
         if (usedIndexes.includes(index)) continue;
         agent = this.agents[index];
-        if (rand(1, 0) <= DRAW_AGENT_DEFAULT_CHANCE * agent.fitnessScore) {
+        if (rand(1) <= agent.fitnessScore) {
           drawnAgent = agent;
           break;
         }
@@ -212,20 +213,26 @@ class Cauldron {
     }
   }
 
+  #sortAgents() {
+    this.agents = this.agents.sort((a, b) => b.fitnessScore - a.fitnessScore);
+  }
+
   /**
    *
    * @param {JimpImage}[image]
    * @param {int}[scale]
    * @param {int}[points]
-   * @param {int}[color]
+   * @param {int|null}[color]
    * @param {boolean}[lerpColor]
    */
-  spill({ image, scale = 1, points = 1000, color = white, lerpColor = true }) {
+  spill({ image, scale = 1, color = null, lerpColor = true }) {
+    let generateColor = color === null;
     this.agents.forEach((agent) => {
-      color = agent.fitnessScore >= 1 ? green : color;
+      if (generateColor) {
+        color = getRandomColor();
+      }
       image.drawBezier({
         bezierCurve: agent.bezierCurve,
-        points,
         color,
         lerpColor,
         scale,
@@ -269,6 +276,7 @@ class Cauldron {
    * @param nofPointsMin
    * @param thicknessMax
    * @param thicknessMin
+   * @param bezzierPoints
    * @param size
    * @returns {Array<Agent>}
    */
@@ -279,6 +287,7 @@ class Cauldron {
     nofPointsMin = 2,
     thicknessMax = 1,
     thicknessMin = 1,
+    bezzierPoints = 100,
     size = 100,
   }) {
     let curves = [];
@@ -289,6 +298,7 @@ class Cauldron {
           yMax,
           nofPoints: rand(nofPointsMax, nofPointsMin),
           thickness: rand(thicknessMax, thicknessMin),
+          bezzierPoints,
         })
       );
     }
