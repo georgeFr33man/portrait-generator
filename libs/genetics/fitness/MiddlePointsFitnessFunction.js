@@ -12,10 +12,9 @@ class MiddlePointsFitnessFunction extends BaseFitnessFunction {
       points = agent.bezierCurve.bezzierPoints,
       step = 1 / points;
 
-    for (let t = 0; t < 1; t += step) {
+    for (let t = 0; t <= 1; t += step) {
       let [x, y] = agent.bezierCurve.getPoint(t);
-      let color = edgeMatrix.getColorOnPosition(x, y);
-      sumOfCoverage += color / white;
+      sumOfCoverage += edgeMatrix.getColorOnPosition(x, y) / white;
     }
 
     let avg = sumOfCoverage / points;

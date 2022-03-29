@@ -46,7 +46,7 @@ function normalize(value, max, min) {
   if (max === min) {
     return 1;
   }
-  return (value - min) / (max - min);
+  return Math.abs((value - min) / (max - min));
 }
 
 function getPointsWithThreshold(point, threshold, xMax, yMax) {

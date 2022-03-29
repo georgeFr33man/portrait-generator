@@ -50,7 +50,7 @@ class BezierCurve {
       points = [];
 
     for (let i = 0; i < nofPoints; i++) {
-      points.push({ x: rand(xMax), y: rand(yMax) });
+      points.push({ x: rand(start.x, end.x), y: rand(start.y, end.y) });
     }
 
     return new BezierCurve(start, end, points, thickness, bezzierPoints);
