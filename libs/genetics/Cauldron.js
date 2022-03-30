@@ -88,7 +88,9 @@ class Cauldron {
 
       // do crossover
       if (agent1 && agent2) {
-        let doCrossover = rand(1) < this.crossOverChance;
+        let doCrossover =
+          rand(1) <=
+          this.crossOverChance * (agent1.fitnessScore + agent2.fitnessScore);
         if (doCrossover) {
           this.crossover(agent1, agent2);
         }
@@ -96,7 +98,7 @@ class Cauldron {
     }
 
     // Mutations
-    // this.agents.forEach((agent) => this.mutateByBits(agent));
+    this.agents.forEach((agent) => this.mutateByBits(agent));
   }
 
   mutateByBits(agent) {
@@ -184,18 +186,19 @@ class Cauldron {
   }
 
   #sortAgents() {
-    this.agents = this.agents.sort((a, b) => a.fitnessScore - b.fitnessScore);
+    this.agents = this.agents.sort((a, b) => b.fitnessScore - a.fitnessScore);
   }
 
   /**
    *
    * @param {JimpImage}[image]
+   * @param {JimpImage}[edgeMatrix]
    * @param {int}[scale]
    * @param {int}[points]
    * @param {int|null}[color]
    * @param {boolean}[lerpColor]
    */
-  spill({ image, scale = 1, color = null, lerpColor = true }) {
+  spill({ image, edgeMatrix, scale = 1, color = null, lerpColor = true }) {
     let generateColor = color === null;
     this.agents.forEach((agent) => {
       if (generateColor) {
@@ -203,6 +206,7 @@ class Cauldron {
       }
       image.drawBezier({
         bezierCurve: agent.bezierCurve,
+        edgeMatrix,
         color,
         lerpColor,
         scale,

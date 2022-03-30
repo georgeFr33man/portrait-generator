@@ -11,22 +11,22 @@ const KERNELS = [
       [0, 1, 2],
     ],
   },
-  // {
-  //   name: "edgedetect",
-  //   kernel: [
-  //     [0, 1, 0],
-  //     [1, -4, 1],
-  //     [0, 1, 0],
-  //   ],
-  // },
-  // {
-  //   name: "edgeenhance",
-  //   kernel: [
-  //     [0, 0, 0],
-  //     [-1, 1, 0],
-  //     [0, 0, 0],
-  //   ],
-  // },
+  {
+    name: "edgedetect",
+    kernel: [
+      [0, 1, 0],
+      [1, -4, 1],
+      [0, 1, 0],
+    ],
+  },
+  {
+    name: "edgeenhance",
+    kernel: [
+      [0, 0, 0],
+      [-1, 1, 0],
+      [0, 0, 0],
+    ],
+  },
   {
     name: "blur",
     kernel: [
@@ -49,8 +49,8 @@ class Picture {
   // @public
   _oi;
   _em;
+  _bi;
   imageUrl;
-  isWaiting = false;
 
   /**
    * @param {string} [imageUrl]
@@ -62,6 +62,14 @@ class Picture {
 
   init() {
     this.#createEdgeMatrix();
+    this.#createBinary();
+  }
+
+  /**
+   * @returns {Promise}
+   */
+  get binaryImage() {
+    return getAsyncProperty(this, "_bi").catch(() => null);
   }
 
   /**
@@ -79,7 +87,6 @@ class Picture {
   }
 
   #createEdgeMatrix() {
-    this.isWaiting = true;
     const jimp = Jimp.read(this.imageUrl);
 
     jimp.then((image) => {
@@ -91,7 +98,16 @@ class Picture {
         image.convolute(kernel.kernel);
       }
       this._em = new JimpImage(image);
-      this.isWaiting = false;
+    });
+  }
+
+  #createBinary() {
+    const jimp = Jimp.read(this.imageUrl);
+
+    jimp.then((image) => {
+      image.greyscale();
+      image.contrast(1);
+      this._bi = new JimpImage(image);
     });
   }
 }

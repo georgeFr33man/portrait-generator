@@ -1,5 +1,5 @@
 const BaseFitnessFunction = require("./BaseFitnessFunction").default;
-const { white } = require("../../utils/colors").default;
+const { white, black } = require("../../utils/colors").default;
 
 class MiddlePointsFitnessFunction extends BaseFitnessFunction {
   /**
@@ -32,6 +32,7 @@ class MiddlePointsFitnessFunction extends BaseFitnessFunction {
       avg = 1 / sumOfCoverage;
     }
 
+    // return avg * this.weight + this._evaluate({ agent, edgeMatrix });
     return avg * this.weight + this._evaluate({ agent, edgeMatrix });
   }
 }

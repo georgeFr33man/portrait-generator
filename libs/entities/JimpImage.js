@@ -1,7 +1,8 @@
 const Jimp = require("jimp");
-const { clamp, getPointsWithThreshold, lerp } =
+const { clamp, getPointsWithThreshold, lerp, rand } =
   require("../functions").mathFunctions;
-const { white, black, transparent, getWithAlpha } = require("../utils").colors;
+const { white, black, blue, red, transparent, getWithAlpha } =
+  require("../utils").colors;
 const { hexAlphaToDecNoAlpha, hexToDec } = require("../functions").converters;
 
 class JimpImage {
@@ -138,22 +139,55 @@ class JimpImage {
   /**
    * Draws Bezier curve.
    * @param {BezierCurve}[bezierCurve]
+   * @param {JimpImage}[edgeMatrix]
    * @param {int}[scale]
    * @param {int}[points]
    * @param {int}[color]
    * @param {boolean}[lerpColor]
    */
-  drawBezier({ bezierCurve, scale = 1, color = white, lerpColor = false }) {
+  drawBezier({
+    bezierCurve,
+    edgeMatrix,
+    scale = 1,
+    color = white,
+    lerpColor = false,
+  }) {
     let step = 1 / bezierCurve.bezzierPoints;
     for (let t = 0; t < 1; t += step) {
       let [x, y] = bezierCurve.getPoint(t);
-      this.drawPoint({
-        x: x * scale,
-        y: y * scale,
-        color,
-        thickness: bezierCurve.thickness * scale,
-        lerpColor,
-      });
+      if (!isNaN(x) && !isNaN(y)) {
+        // let underColor = edgeMatrix.getColorOnPosition(
+        //   x,
+        //   y,
+        //   bezierCurve.thickness
+        // );
+        // if (underColor / white === 1) {
+        //   this.drawPoint({
+        //     x: x * scale,
+        //     y: y * scale,
+        //     color: red,
+        //     thickness: bezierCurve.thickness * scale,
+        //     lerpColor,
+        //   });
+        // }
+        // if (underColor / black === 1) {
+        //   this.drawPoint({
+        //     x: x * scale,
+        //     y: y * scale,
+        //     color: blue,
+        //     thickness: bezierCurve.thickness * scale,
+        //     lerpColor,
+        //   });
+        // }
+
+        this.drawPoint({
+          x: x * scale,
+          y: y * scale,
+          color,
+          thickness: bezierCurve.thickness * scale,
+          lerpColor,
+        });
+      }
     }
   }
 

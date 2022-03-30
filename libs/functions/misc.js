@@ -8,7 +8,7 @@ function getAsyncProperty(obj, propertyName, tries) {
       if (tries >= 1000 / 50) {
         error("Promise rejected, timeout!");
         reject("Rejected because of timeout.");
-      } else if (obj.isWaiting && !obj[propertyName]) {
+      } else if (!obj[propertyName]) {
         resolve(getAsyncProperty(obj, propertyName, ++tries));
       } else {
         resolve(obj[propertyName]);
