@@ -27,7 +27,6 @@ function replaceStringFromIndex(str, replaceWith, startingAt) {
   for (let i = 0; i < replaceWith.length; i++, index++) {
     newStr += replaceWith.charAt(index);
   }
-  newStr += str.slice(startingAt + replaceWith.length, str.length);
 
   return newStr;
 }

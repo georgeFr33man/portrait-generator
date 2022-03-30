@@ -8,17 +8,19 @@ class TestPointFitnessFunction extends BaseFitnessFunction {
    */
   evaluate({ agent, edgeMatrix }) {
     let points = agent.bezierCurve.bezzierPoints,
-      step = 1 / points,
-      min = 1;
+      step = 1 / points;
 
     let sumX = 0,
       sumY = 0,
       avgX,
       avgY;
+
     for (let t = 0; t < 1; t += step) {
       let [x, y] = agent.bezierCurve.getPoint(t);
-      sumX += Math.abs(x - 760);
-      sumY += Math.abs(y - 760);
+      if (!isNaN(x) && !isNaN(y)) {
+        sumX += Math.abs(x - 100);
+        sumY += Math.abs(y - 250);
+      }
     }
 
     avgX = sumX / points;

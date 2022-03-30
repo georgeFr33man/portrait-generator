@@ -9,6 +9,7 @@ const { white, green, getRandomColor } = require("../utils/colors").default;
 const { debug, loading } = require("../utils/logger").default;
 const { chunkString } = require("../functions/stringFunctions").default;
 const { swapIndexes } = require("../functions/misc").default;
+const lodash = require("lodash");
 
 const ALLELE_LENGTH = require("./config").default.ALLELE_LENGTH;
 const DRAW_AGENTS_MAX_TRIES = require("./config").default.DRAW_AGENTS_MAX_TRIES;
@@ -19,21 +20,18 @@ const CROSS_OVER_POINTS = require("./config").default.CROSS_OVER_POINTS;
 class Cauldron {
   // @public
   agents;
+  populationConfig;
   crossOverChance;
   mutationChance;
 
-  // @private
-  #bestAgent;
-  #worstAgent;
-
   /**
-   * @param {[Agent]}[agents]
+   * @param {PopulationConfig}[populationConfig]
    * @param {number}[crossOverChance]
    * @param {number}[mutationChance]
-   * @param {BaseFitnessFunction}[fitnessFunctions]
    */
-  constructor(agents, crossOverChance = 0.3, mutationChance = 0.1) {
-    this.agents = agents;
+  constructor(populationConfig, crossOverChance = 0.3, mutationChance = 0.1) {
+    this.agents = Cauldron.generateAgentsPopulation(populationConfig);
+    this.populationConfig = populationConfig;
     this.crossOverChance = crossOverChance;
     this.mutationChance = mutationChance;
   }
@@ -47,20 +45,24 @@ class Cauldron {
    */
   doMixing({ edgeMatrix, fitnessFuncs, nofMixes = 1000, maxMixingTime = 0 }) {
     let fitnessFunction = this.#createFitnessFunction(fitnessFuncs);
+    let counter = 0;
     if (maxMixingTime !== 0) {
       let elapsedTime = 0;
       let start = Date.now();
       while (elapsedTime < maxMixingTime) {
+        ++counter;
         this.mix({ edgeMatrix, fitnessFunction });
         elapsedTime = Date.now() - start;
         loading((elapsedTime / maxMixingTime) * 100);
       }
     } else {
-      for (let i = 0; i < nofMixes; i++) {
+      for (let i = 0; i < nofMixes; i++, ++counter) {
         this.mix({ edgeMatrix, fitnessFunction });
         loading(((i + 1) / nofMixes) * 100);
       }
     }
+
+    debug("Number of mixes: " + counter);
   }
 
   /**
@@ -71,53 +73,40 @@ class Cauldron {
     // Evaluate agents.
     this.agents.forEach((agent) => {
       agent.fitnessScore = fitnessFunction.evaluate({ agent, edgeMatrix });
-      this.#bestAgent =
-        !this.#bestAgent || agent.fitnessScore > this.#bestAgent.fitnessScore
-          ? agent
-          : this.#bestAgent;
-      this.#worstAgent =
-        !this.#worstAgent || agent.fitnessScore < this.#worstAgent.fitnessScore
-          ? agent
-          : this.#worstAgent;
     });
-    this.#normalizeAgents();
+
     this.#sortAgents();
+    this.#normalizeAgents();
 
     // Crossover
     let usedIndexes = [];
-    let agent2 = null,
-      agent2Index = null;
-    this.agents.forEach((agent, index) => {
-      if (!usedIndexes.includes(index)) {
-        // select agent for crossing over with
-        [agent2, agent2Index] = this.#drawAgent(usedIndexes);
-        usedIndexes.push(index);
-        usedIndexes.push(agent2Index);
-        // do crossover
-        if (agent && agent2) {
-          let doCrossover = rand(1) < this.crossOverChance;
-          if (doCrossover) {
-            this.crossover(agent, agent2);
-          }
-        }
+    while (usedIndexes.length < this.agents.length) {
+      let [agent1, agent1Index] = this.#drawAgent(usedIndexes);
+      usedIndexes.push(agent1Index);
+      let [agent2, agent2Index] = this.#drawAgent(usedIndexes);
+      usedIndexes.push(agent2Index);
 
-        // clear out.
-        agent2 = null;
-        agent2Index = null;
+      // do crossover
+      if (agent1 && agent2) {
+        let doCrossover = rand(1) < this.crossOverChance;
+        if (doCrossover) {
+          this.crossover(agent1, agent2);
+        }
       }
-    });
+    }
 
     // Mutations
-    // this.agents.forEach((agent) => this.mutate(agent));
     // this.agents.forEach((agent) => this.mutateByBits(agent));
   }
 
   mutateByBits(agent) {
     let gr = agent.geneticRepresentation.split("");
-    gr.map((bit) => {
+    gr.map((bit, index) => {
       // do mutation
-      let factor = agent.fitnessScore !== 0 ? agent.fitnessScore : 0;
-      let doMutation = rand(1) > this.mutationChance * factor;
+      let factor = agent.fitnessScore;
+      let doMutation =
+        rand(1) >=
+        (this.mutationChance * factor) / ((index % ALLELE_LENGTH) + 1);
       if (doMutation) {
         return bit === "0" ? "1" : "0";
       }
@@ -126,23 +115,6 @@ class Cauldron {
     });
 
     agent.geneticRepresentation = gr.join("");
-  }
-
-  mutate(agent) {
-    let gr = agent.geneticRepresentation;
-    let chunks = chunkString(gr, ALLELE_LENGTH);
-
-    for (let i = 0; i < chunks.length; i++) {
-      // do mutation
-      let factor = agent.fitnessScore !== 0 ? agent.fitnessScore : 0;
-      let doMutation = rand(1) > this.mutationChance * factor;
-      if (doMutation) {
-        let randIndex = randInt(chunks.length - 1);
-        chunks = swapIndexes(chunks, i, randIndex);
-      }
-    }
-
-    agent.geneticRepresentation = chunks.join("");
   }
 
   crossover(agent1, agent2) {
@@ -181,7 +153,7 @@ class Cauldron {
       for (index; index < this.agents.length; index++) {
         if (usedIndexes.includes(index)) continue;
         agent = this.agents[index];
-        if (rand(1) <= agent.fitnessScore) {
+        if (rand(1) >= agent.fitnessScore) {
           drawnAgent = agent;
           break;
         }
@@ -204,17 +176,15 @@ class Cauldron {
   }
 
   #normalizeAgents() {
-    if (this.#bestAgent && this.#worstAgent) {
-      let bestVal = this.#bestAgent.fitnessScore;
-      let worstVal = this.#worstAgent.fitnessScore;
-      this.agents.forEach((agent) => {
-        agent.fitnessScore = normalize(agent.fitnessScore, bestVal, worstVal);
-      });
-    }
+    let min = this.agents[0].fitnessScore,
+      max = this.agents[this.agents.length - 1].fitnessScore;
+    this.agents.forEach((agent) => {
+      agent.fitnessScore = normalize(agent.fitnessScore, max, min);
+    });
   }
 
   #sortAgents() {
-    this.agents = this.agents.sort((a, b) => b.fitnessScore - a.fitnessScore);
+    this.agents = this.agents.sort((a, b) => a.fitnessScore - b.fitnessScore);
   }
 
   /**
@@ -269,36 +239,25 @@ class Cauldron {
   }
 
   /**
-   *
-   * @param xMax
-   * @param yMax
-   * @param nofPointsMax
-   * @param nofPointsMin
-   * @param thicknessMax
-   * @param thicknessMin
-   * @param bezzierPoints
-   * @param size
+   * @param {PopulationConfig}[populationConfig]
    * @returns {Array<Agent>}
    */
-  static generateAgentsPopulation({
-    xMax,
-    yMax,
-    nofPointsMax = 2,
-    nofPointsMin = 2,
-    thicknessMax = 1,
-    thicknessMin = 1,
-    bezzierPoints = 100,
-    size = 100,
-  }) {
+  static generateAgentsPopulation(populationConfig) {
     let curves = [];
-    for (let i = 0; i < size; i++) {
+    for (let i = 0; i < populationConfig.size; i++) {
       curves.push(
         BezierCurve.getRandomCurve({
-          xMax,
-          yMax,
-          nofPoints: rand(nofPointsMax, nofPointsMin),
-          thickness: rand(thicknessMax, thicknessMin),
-          bezzierPoints,
+          xMax: populationConfig.xMax,
+          yMax: populationConfig.yMax,
+          nofPoints: rand(
+            populationConfig.nofPointsMax,
+            populationConfig.nofPointsMin
+          ),
+          thickness: rand(
+            populationConfig.thicknessMax,
+            populationConfig.thicknessMin
+          ),
+          bezzierPoints: populationConfig.bezzierPoints,
         })
       );
     }

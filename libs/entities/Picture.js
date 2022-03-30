@@ -11,22 +11,22 @@ const KERNELS = [
       [0, 1, 2],
     ],
   },
-  {
-    name: "edgedetect",
-    kernel: [
-      [0, 1, 0],
-      [1, -4, 1],
-      [0, 1, 0],
-    ],
-  },
-  {
-    name: "edgeenhance",
-    kernel: [
-      [0, 0, 0],
-      [-1, 1, 0],
-      [0, 0, 0],
-    ],
-  },
+  // {
+  //   name: "edgedetect",
+  //   kernel: [
+  //     [0, 1, 0],
+  //     [1, -4, 1],
+  //     [0, 1, 0],
+  //   ],
+  // },
+  // {
+  //   name: "edgeenhance",
+  //   kernel: [
+  //     [0, 0, 0],
+  //     [-1, 1, 0],
+  //     [0, 0, 0],
+  //   ],
+  // },
   {
     name: "blur",
     kernel: [
@@ -85,11 +85,11 @@ class Picture {
     jimp.then((image) => {
       this._oi = new JimpImage(image);
 
-      // image.greyscale();
-      // image.contrast(1);
-      // for (let kernel of KERNELS) {
-      //   image.convolute(kernel.kernel);
-      // }
+      image.greyscale();
+      image.contrast(1);
+      for (let kernel of KERNELS) {
+        image.convolute(kernel.kernel);
+      }
       this._em = new JimpImage(image);
       this.isWaiting = false;
     });
