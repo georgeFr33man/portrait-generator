@@ -1,4 +1,4 @@
-const BaseFitnessFunction = require("./BaseFitnessFunction").default;
+const BaseFitnessFunction = require("./BaseFitnessFunction");
 
 class TestPointFitnessFunction extends BaseFitnessFunction {
   /**
@@ -32,4 +32,4 @@ class TestPointFitnessFunction extends BaseFitnessFunction {
   }
 }
 
-module.exports.default = TestPointFitnessFunction;
+module.exports = TestPointFitnessFunction;

@@ -1,5 +1,5 @@
-module.exports.default = { log, error, debug, loading };
-const { createString } = require("./../functions/stringFunctions").default;
+module.exports = { log, error, debug, loading };
+const { createString } = require("./../functions/stringFunctions");
 
 const logLine = "<------------------------ LOG ------------------------>";
 const errorLine = "<----------------------- ERROR ----------------------->";

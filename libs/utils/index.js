@@ -1,7 +1,7 @@
-const logger = require("./logger").default;
-const colors = require("./colors").default;
+const logger = require("./logger");
+const colors = require("./colors");
 
-module.exports.default = { logger, colors };
+module.exports = { logger, colors };
 
 module.exports.logger = logger;
 module.exports.colors = colors;

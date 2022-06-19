@@ -1,6 +1,6 @@
-const Agent = require("../Agent").default;
-const JimpImage = require("../../entities/JimpImage").default;
-const IFitnessFunction = require("./IFitnessFunction").default;
+const Agent = require("../Agent");
+const JimpImage = require("../../entities/JimpImage");
+const IFitnessFunction = require("./IFitnessFunction");
 
 class BaseFitnessFunction extends IFitnessFunction {
   weight;
@@ -37,4 +37,4 @@ class BaseFitnessFunction extends IFitnessFunction {
   }
 }
 
-module.exports.default = BaseFitnessFunction;
+module.exports = BaseFitnessFunction;

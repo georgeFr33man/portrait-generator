@@ -1,4 +1,4 @@
-module.exports.default = { createString, replaceStringFromIndex, chunkString };
+module.exports = { createString, replaceStringFromIndex, chunkString };
 
 /**
  * @param {string}[char]

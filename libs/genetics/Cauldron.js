@@ -1,37 +1,45 @@
-const Agent = require("./Agent").default;
-const JimpImage = require("../entities/JimpImage").default;
-const BezierCurve = require("../entities").default.BezierCurve;
+const Agent = require("./Agent");
+const JimpImage = require("../entities/JimpImage");
+const BezierCurve = require("../entities").BezierCurve;
 const { rand, normalize, randInt } =
-  require("../functions/mathFunctions").default;
+  require("../functions/mathFunctions");
 const { replaceStringFromIndex } =
-  require("../functions/stringFunctions").default;
-const { white, green, getRandomColor } = require("../utils/colors").default;
-const { debug, loading } = require("../utils/logger").default;
-const { chunkString } = require("../functions/stringFunctions").default;
-const { swapIndexes } = require("../functions/misc").default;
+  require("../functions/stringFunctions");
+const { white, green, getRandomColor } = require("../utils/colors");
+const { debug, loading } = require("../utils/logger");
+const { chunkString } = require("../functions/stringFunctions");
+const { swapIndexes } = require("../functions/misc");
 const lodash = require("lodash");
 
-const ALLELE_LENGTH = require("./config").default.ALLELE_LENGTH;
-const DRAW_AGENTS_MAX_TRIES = require("./config").default.DRAW_AGENTS_MAX_TRIES;
+const ALLELE_LENGTH = require("./config").ALLELE_LENGTH;
+const DRAW_AGENTS_MAX_TRIES = require("./config").DRAW_AGENTS_MAX_TRIES;
 const DRAW_AGENT_DEFAULT_CHANCE =
-  require("./config").default.DRAW_AGENT_DEFAULT_CHANCE;
-const CROSS_OVER_POINTS = require("./config").default.CROSS_OVER_POINTS;
+  require("./config").DRAW_AGENT_DEFAULT_CHANCE;
+const CROSS_OVER_POINTS = require("./config").CROSS_OVER_POINTS;
 
 class Cauldron {
   // @public
   agents;
+  negative;
   populationConfig;
   crossOverChance;
   mutationChance;
 
   /**
    * @param {PopulationConfig}[populationConfig]
+   * @param {boolean}[negative]
    * @param {number}[crossOverChance]
    * @param {number}[mutationChance]
    */
-  constructor(populationConfig, crossOverChance = 0.3, mutationChance = 0.1) {
+  constructor(
+    populationConfig,
+    negative = false,
+    crossOverChance = 0.3,
+    mutationChance = 0.1
+  ) {
     this.agents = Cauldron.generateAgentsPopulation(populationConfig);
     this.populationConfig = populationConfig;
+    this.negative = negative;
     this.crossOverChance = crossOverChance;
     this.mutationChance = mutationChance;
   }
@@ -88,10 +96,11 @@ class Cauldron {
 
       // do crossover
       if (agent1 && agent2) {
-        let doCrossover =
-          rand(1) <=
-          this.crossOverChance * (agent1.fitnessScore + agent2.fitnessScore);
-        if (doCrossover) {
+        let factor = this.crossOverChance;
+        if (this.negative) {
+          factor *= agent1.fitnessScore + agent2.fitnessScore;
+        }
+        if (rand(1) <= factor) {
           this.crossover(agent1, agent2);
         }
       }
@@ -105,10 +114,16 @@ class Cauldron {
     let gr = agent.geneticRepresentation.split("");
     gr.map((bit, index) => {
       // do mutation
-      let factor = agent.fitnessScore;
-      let doMutation =
-        rand(1) >=
-        (this.mutationChance * factor) / ((index % ALLELE_LENGTH) + 1);
+      let factor = agent.fitnessScore === 0 ? 1 : agent.fitnessScore;
+      if (this.negative) {
+        factor = agent.fitnessScore === 0 ? 1 : 1 / agent.fitnessScore;
+      }
+      // let doMutation =
+      //   rand(1) >=
+      //   (this.mutationChance * factor) / ((index % ALLELE_LENGTH) + 1) / 2;
+      let doMutation = this.mutationChance;
+      //   rand(1) >=
+      //   (this.mutationChance * factor) / ((index % ALLELE_LENGTH) + 1) / 2;
       if (doMutation) {
         return bit === "0" ? "1" : "0";
       }
@@ -186,7 +201,11 @@ class Cauldron {
   }
 
   #sortAgents() {
-    this.agents = this.agents.sort((a, b) => b.fitnessScore - a.fitnessScore);
+    let func = (a, b) => a.fitnessScore - b.fitnessScore;
+    if (this.negative) {
+      func = (a, b) => b.fitnessScore - a.fitnessScore;
+    }
+    this.agents = this.agents.sort(func);
   }
 
   /**
@@ -270,4 +289,4 @@ class Cauldron {
   }
 }
 
-module.exports.default = Cauldron;
+module.exports = Cauldron;

@@ -1,9 +1,9 @@
-const BezierCurve = require("../entities/BezierCurve").default;
+const BezierCurve = require("../entities/BezierCurve");
 const { binaryToDec, decToBinary } = require("../functions/converters").binary;
-const { chunkString } = require("../functions/stringFunctions").default;
+const { chunkString } = require("../functions/stringFunctions");
 const lodash = require("lodash");
 
-const ALLELE_LENGTH = require("./config").default.ALLELE_LENGTH;
+const ALLELE_LENGTH = require("./config").ALLELE_LENGTH;
 
 class Agent {
   // @private
@@ -91,4 +91,4 @@ class Agent {
   }
 }
 
-module.exports.default = Agent;
+module.exports = Agent;

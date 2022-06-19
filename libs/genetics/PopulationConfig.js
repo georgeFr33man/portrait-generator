@@ -30,4 +30,4 @@ class PopulationConfig {
   }
 }
 
-module.exports.default = PopulationConfig;
+module.exports = PopulationConfig;

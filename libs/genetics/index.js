@@ -1,7 +1,7 @@
-const Cauldron = require("./Cauldron").default;
-const Agent = require("./Agent").default;
-const PopulationConfig = require("./PopulationConfig").default;
-const config = require("./config").default;
-const fitness = require("./fitness").default;
+const Cauldron = require("./Cauldron");
+const Agent = require("./Agent");
+const PopulationConfig = require("./PopulationConfig");
+const config = require("./config");
+const fitness = require("./fitness");
 
-module.exports.default = { Cauldron, Agent, PopulationConfig, fitness, config };
+module.exports = { Cauldron, Agent, PopulationConfig, fitness, config };

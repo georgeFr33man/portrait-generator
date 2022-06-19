@@ -1,7 +1,7 @@
 const Jimp = require("jimp");
-const { rand } = require("./../functions/mathFunctions").default;
-const { debug } = require("./../utils/logger").default;
-const { hexToDec } = require("./../functions/converters").default;
+const { rand } = require("./../functions/mathFunctions");
+const { debug } = require("./../utils/logger");
+const { hexToDec } = require("./../functions/converters");
 
 const white = Jimp.rgbaToInt(255, 255, 255, 255);
 const black = Jimp.rgbaToInt(0, 0, 0, 255);
@@ -14,7 +14,7 @@ const transparent = Jimp.rgbaToInt(0, 0, 0, 0);
 
 const colors = { white, black, red, green, blue, transparent };
 
-module.exports.default = {
+module.exports = {
   getColor,
   getWithAlpha,
   getRandomColor,

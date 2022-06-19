@@ -1,4 +1,4 @@
-module.exports.default = {
+module.exports = {
   clamp,
   rand,
   getPointsWithThreshold,

@@ -1,5 +1,5 @@
 const bezier = require("bezier-curve");
-const { rand } = require("./../functions/mathFunctions").default;
+const { rand } = require("./../functions/mathFunctions");
 
 class BezierCurve {
   // @public
@@ -90,4 +90,4 @@ class BezierCurve {
   }
 }
 
-module.exports.default = BezierCurve;
+module.exports = BezierCurve;

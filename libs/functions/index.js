@@ -1,9 +1,9 @@
-const mathFunctions = require("./mathFunctions").default;
-const misc = require("./misc").default;
-const converters = require("./converters").default;
-const stringFunctions = require("./stringFunctions").default;
+const mathFunctions = require("./mathFunctions");
+const misc = require("./misc");
+const converters = require("./converters");
+const stringFunctions = require("./stringFunctions");
 
-module.exports.default = { misc, converters, mathFunctions, stringFunctions };
+module.exports = { misc, converters, mathFunctions, stringFunctions };
 
 module.exports.misc = misc;
 module.exports.mathFunctions = mathFunctions;

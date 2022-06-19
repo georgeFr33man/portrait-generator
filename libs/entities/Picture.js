@@ -1,5 +1,5 @@
 const Jimp = require("jimp");
-const JimpImage = require("./JimpImage").default;
+const JimpImage = require("./JimpImage");
 const { getAsyncProperty } = require("../functions").misc;
 
 const KERNELS = [
@@ -112,4 +112,4 @@ class Picture {
   }
 }
 
-module.exports.default = Picture;
+module.exports = Picture;

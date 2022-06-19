@@ -1,9 +1,9 @@
 /* Fitness functions */
 const MiddlePointsFitnessFunction =
-  require("./MiddlePointsFitnessFunction").default;
-const TestPointFitnessFunction = require("./TestPointFitnessFunction").default;
+  require("./MiddlePointsFitnessFunction");
+const TestPointFitnessFunction = require("./TestPointFitnessFunction");
 
-module.exports.default = {
+module.exports = {
   MiddlePointsFitnessFunction,
   TestPointFitnessFunction,
 };

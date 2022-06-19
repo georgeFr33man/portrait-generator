@@ -1,6 +1,6 @@
 const { error } = require("./../utils/logger");
 
-module.exports.default = { getAsyncProperty, swapIndexes };
+module.exports = { getAsyncProperty, swapIndexes };
 
 function getAsyncProperty(obj, propertyName, tries) {
   return new Promise((resolve, reject) => {

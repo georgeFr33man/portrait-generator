@@ -227,4 +227,4 @@ class JimpImage {
   }
 }
 
-module.exports.default = JimpImage;
+module.exports = JimpImage;

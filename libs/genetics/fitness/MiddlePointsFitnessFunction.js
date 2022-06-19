@@ -1,5 +1,5 @@
-const BaseFitnessFunction = require("./BaseFitnessFunction").default;
-const { white, black } = require("../../utils/colors").default;
+const BaseFitnessFunction = require("./BaseFitnessFunction");
+const { white, black } = require("../../utils/colors");
 
 class MiddlePointsFitnessFunction extends BaseFitnessFunction {
   /**
@@ -37,4 +37,4 @@ class MiddlePointsFitnessFunction extends BaseFitnessFunction {
   }
 }
 
-module.exports.default = MiddlePointsFitnessFunction;
+module.exports = MiddlePointsFitnessFunction;

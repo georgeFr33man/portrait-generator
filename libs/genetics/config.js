@@ -5,4 +5,4 @@ const config = {
   CROSS_OVER_POINTS: 2,
 };
 
-module.exports.default = config;
+module.exports = config;

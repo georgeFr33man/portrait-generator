@@ -1,4 +1,4 @@
-module.exports.default = {
+module.exports = {
   decToHex,
   decToHexAlpha,
   hexAlphaToHex,
