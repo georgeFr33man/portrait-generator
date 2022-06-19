@@ -11,18 +11,27 @@ function log(message) {
   console.log();
 }
 
+/**
+ * @param message
+ */
 function error(message) {
   console.error(errorLine);
   console.error(message);
   console.log();
 }
 
+/**
+ * @param message
+ */
 function debug(message) {
   console.debug(debugLine);
   console.debug(message);
   console.log();
 }
 
+/**
+ * @param percentage
+ */
 function loading(percentage) {
   console.clear();
   let loadingBar = "";

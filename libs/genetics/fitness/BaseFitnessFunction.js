@@ -2,10 +2,11 @@ const Agent = require("../Agent");
 const JimpImage = require("../../entities/JimpImage");
 const IFitnessFunction = require("./IFitnessFunction");
 
+/**
+ * @property {number} weight - the weight of the fitness function evaluation
+ * @property {BaseFitnessFunction} decorator - the next fitness function
+ */
 class BaseFitnessFunction extends IFitnessFunction {
-  weight;
-  decorator;
-
   /**
    * @param {number}[weight]
    * @param {BaseFitnessFunction|null}[decorator]

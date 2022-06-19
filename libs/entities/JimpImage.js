@@ -5,15 +5,15 @@ const { white, black, blue, red, transparent, getWithAlpha } =
   require("../utils").colors;
 const { hexAlphaToDecNoAlpha, hexToDec } = require("../functions").converters;
 
+/**
+ * A helper class for the Jimp object
+ *
+ * @property {Jimp} #jimp - the Jimp object
+ * @property {number} width - the width of the image
+ * @property {number} height - the height of the image
+ * @property {int} scale - the scale of the image
+ */
 class JimpImage {
-  // @private
-  #jimp;
-
-  // @public
-  width;
-  height;
-  scale;
-
   /**
    * @param {Jimp} [jimp]
    * @param {number} [scale]

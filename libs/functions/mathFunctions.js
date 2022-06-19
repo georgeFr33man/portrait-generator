@@ -7,6 +7,11 @@ module.exports = {
   randInt,
 };
 
+/**
+ * @param value
+ * @param max
+ * @returns {number|*}
+ */
 function clamp(value, max) {
   if (value < 0) {
     return 0;
@@ -18,6 +23,11 @@ function clamp(value, max) {
   return value;
 }
 
+/**
+ * @param max
+ * @param min
+ * @returns {number}
+ */
 function rand(max, min = 0) {
   return Math.random() * (max - min) + min;
 }
@@ -49,6 +59,13 @@ function normalize(value, max, min) {
   return Math.abs((value - min) / (max - min));
 }
 
+/**
+ * @param point
+ * @param threshold
+ * @param xMax
+ * @param yMax
+ * @returns {{yMin: number, yMax: number, xMax: number, xMin: number}}
+ */
 function getPointsWithThreshold(point, threshold, xMax, yMax) {
   return {
     xMin: Math.round(clamp(point.x - threshold, xMax)),

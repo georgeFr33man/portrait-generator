@@ -31,6 +31,11 @@ function replaceStringFromIndex(str, replaceWith, startingAt) {
   return newStr;
 }
 
+/**
+ * @param str
+ * @param size
+ * @returns {*[]}
+ */
 function chunkString(str, size) {
   let numberOfChunks = str.length / size,
     chunks = [];

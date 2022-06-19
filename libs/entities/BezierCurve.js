@@ -1,14 +1,14 @@
 const bezier = require("bezier-curve");
 const { rand } = require("./../functions/mathFunctions");
 
+/**
+ * @property {{x: number, y: number}} start - the starting point for the curve
+ * @property {{x: number, y: number}} end - the ending point for the curve
+ * @property {int} points - the number of points for the curve
+ * @property {int} thickness - the thickness of the curve
+ * @property {int} bezzierPoints - the number of points to evaluate curve with
+ */
 class BezierCurve {
-  // @public
-  start;
-  end;
-  points;
-  thickness;
-  bezzierPoints;
-
   /**
    * @param {{x: number, y: number}} [start]
    * @param {{x: number, y: number}} [end]

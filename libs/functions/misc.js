@@ -2,6 +2,12 @@ const { error } = require("./../utils/logger");
 
 module.exports = { getAsyncProperty, swapIndexes };
 
+/**
+ * @param obj
+ * @param propertyName
+ * @param tries
+ * @returns {Promise}
+ */
 function getAsyncProperty(obj, propertyName, tries) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -17,6 +23,12 @@ function getAsyncProperty(obj, propertyName, tries) {
   });
 }
 
+/**
+ * @param {[]} arr
+ * @param {int} i1
+ * @param {int} i2
+ * @returns {[]}
+ */
 function swapIndexes(arr, i1, i2) {
   let tmp = arr[i1];
   arr[i1] = arr[i2];

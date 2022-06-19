@@ -13,3 +13,7 @@ module.exports.functions = functions;
 /* Utils */
 const utils = require("./utils");
 module.exports.utils = utils;
+
+/* Image builder */
+const imageBuilder = require("./image-builder");
+module.exports.imageBuilder = imageBuilder;

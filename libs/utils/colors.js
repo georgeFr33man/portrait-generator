@@ -22,16 +22,29 @@ module.exports = {
   ...colors,
 };
 
+/**
+ * @param alpha
+ * @returns {number}
+ */
 function getRandomColor(alpha = 255) {
   return Jimp.rgbaToInt(rand(255), rand(255), rand(255), alpha);
 }
 
+/**
+ * @param color
+ * @param alpha
+ * @returns {number}
+ */
 function getWithAlpha(color, alpha = 255) {
   let rgba = Jimp.intToRGBA(color);
 
   return Jimp.rgbaToInt(rgba.r, rgba.g, rgba.b, alpha);
 }
 
+/**
+ * @param hex
+ * @returns {number}
+ */
 function getColor(hex) {
   if (hex.length === 6) {
     hex += "ff";

@@ -1,3 +1,14 @@
+/**
+ * Population configuration definition.
+ *
+ * @property {int} xMax - the base image width value
+ * @property {int} yMax - the base image height value
+ * @property {int} nofPointsMax - the maximum number of points for the bezzier curve
+ * @property {int} nofPointsMin - the minimum number of points for the bezzier curve
+ * @property {int} thicknessMax - the maximum thickness of the bezzier curve
+ * @property {int} bezzierPoints - the number of bezzier curve points to evaluate
+ * @property {int} size - the population size
+ */
 class PopulationConfig {
   /**
    * @param {int}[xMax]

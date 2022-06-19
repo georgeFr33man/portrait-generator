@@ -17,14 +17,14 @@ const DRAW_AGENT_DEFAULT_CHANCE =
   require("./config").DRAW_AGENT_DEFAULT_CHANCE;
 const CROSS_OVER_POINTS = require("./config").CROSS_OVER_POINTS;
 
+/**
+ * @property {array<Agent>} agents - the array of Agents
+ * @property {boolean} negative - controls if the evaluation should be a negative
+ * @property {PopulationConfig} populationConfig - a config object for the population
+ * @property {number} crossOverChance - a chance factor for cross over
+ * @property {number} mutationChance - a chance factor for mutationChance
+ */
 class Cauldron {
-  // @public
-  agents;
-  negative;
-  populationConfig;
-  crossOverChance;
-  mutationChance;
-
   /**
    * @param {PopulationConfig}[populationConfig]
    * @param {boolean}[negative]
@@ -37,8 +37,8 @@ class Cauldron {
     crossOverChance = 0.3,
     mutationChance = 0.1
   ) {
-    this.agents = Cauldron.generateAgentsPopulation(populationConfig);
     this.populationConfig = populationConfig;
+    this.agents = Cauldron.generateAgentsPopulation(this.populationConfig);
     this.negative = negative;
     this.crossOverChance = crossOverChance;
     this.mutationChance = mutationChance;
@@ -110,6 +110,9 @@ class Cauldron {
     this.agents.forEach((agent) => this.mutateByBits(agent));
   }
 
+  /**
+   * @param {Agent} agent
+   */
   mutateByBits(agent) {
     let gr = agent.geneticRepresentation.split("");
     gr.map((bit, index) => {
@@ -134,6 +137,10 @@ class Cauldron {
     agent.geneticRepresentation = gr.join("");
   }
 
+  /**
+   * @param {Agent} agent1
+   * @param {Agent} agent2
+   */
   crossover(agent1, agent2) {
     let gr1 = agent1.geneticRepresentation;
     let gr2 = agent2.geneticRepresentation;
@@ -159,6 +166,10 @@ class Cauldron {
     agent2.geneticRepresentation = gr2;
   }
 
+  /**
+   * @param {[]} usedIndexes
+   * @returns {[Agent, int]}
+   */
   #drawAgent(usedIndexes) {
     let tries = 0,
       index = 0,

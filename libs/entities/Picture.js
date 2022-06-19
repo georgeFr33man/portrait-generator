@@ -45,8 +45,13 @@ const KERNELS = [
   },
 ];
 
+/**
+ * @propety {JimpImage} _oi - original image
+ * @propety {JimpImage} _em - edge matrix image
+ * @propety {JimpImage} _bi - binary image
+ * @propety {string} imageUrl - image url/base64/path
+ */
 class Picture {
-  // @public
   _oi;
   _em;
   _bi;
@@ -66,21 +71,21 @@ class Picture {
   }
 
   /**
-   * @returns {Promise}
+   * @returns {Promise<JimpImage>}
    */
   get binaryImage() {
     return getAsyncProperty(this, "_bi").catch(() => null);
   }
 
   /**
-   * @returns {Promise}
+   * @returns {Promise<JimpImage>}
    */
   get edgeMatrix() {
     return getAsyncProperty(this, "_em").catch(() => null);
   }
 
   /**
-   * @returns {Promise}
+   * @returns {Promise<JimpImage>}
    */
   get originalImage() {
     return getAsyncProperty(this, "_oi").catch(() => null);

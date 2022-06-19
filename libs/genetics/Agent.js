@@ -5,8 +5,12 @@ const lodash = require("lodash");
 
 const ALLELE_LENGTH = require("./config").ALLELE_LENGTH;
 
+/**
+ * @property {BezierCurve} #bezierCurve - bezzier curve object
+ * @property {number} #fitnessScore - the fitness score of the agent
+ * @property {string} #geneticRepresentation - the genetic representation of the Agent store as string
+ */
 class Agent {
-  // @private
   #bezierCurve;
   #fitnessScore;
   #geneticRepresentation;
