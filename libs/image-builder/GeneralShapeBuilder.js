@@ -1,8 +1,12 @@
 const BaseBuilder = require("./BaseShapeBuilder");
+const ShapeBuilderOptions = require("./options/ShapeBuilderOptions");
 const { PopulationConfig } = require("../genetics");
 
 class GeneralShapeBuilder extends BaseBuilder {
-  constructor({ imageUrl = '' }) {
+  /**
+   * @param {ShapeBuilderOptions} shapeBuilderOptions
+   */
+  constructor(shapeBuilderOptions) {
     const populationConfig = new PopulationConfig({
       xMax: 0,
       yMax: 0,
@@ -14,7 +18,11 @@ class GeneralShapeBuilder extends BaseBuilder {
       size: 1000,
     });
 
-    super({ imageUrl, populationConfig });
+    super(new ShapeBuilderOptions({
+      imageUrl: shapeBuilderOptions.imageUrl,
+      color: shapeBuilderOptions.color,
+      populationConfig
+    }));
 
     this.mutationChance = 0.3;
     this.crossOverChance = 0.8;

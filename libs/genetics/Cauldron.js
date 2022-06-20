@@ -222,13 +222,11 @@ class Cauldron {
   /**
    *
    * @param {JimpImage}[image]
-   * @param {JimpImage}[edgeMatrix]
    * @param {int}[scale]
-   * @param {int}[points]
    * @param {int|null}[color]
    * @param {boolean}[lerpColor]
    */
-  spill({ image, edgeMatrix, scale = 1, color = null, lerpColor = true }) {
+  spill({ image, scale = 1, color = null, lerpColor = true }) {
     let generateColor = color === null;
     this.agents.forEach((agent) => {
       if (generateColor) {
@@ -236,7 +234,6 @@ class Cauldron {
       }
       image.drawBezier({
         bezierCurve: agent.bezierCurve,
-        edgeMatrix,
         color,
         lerpColor,
         scale,

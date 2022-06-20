@@ -14,6 +14,8 @@ const { hexAlphaToDecNoAlpha, hexToDec } = require("../functions").converters;
  * @property {int} scale - the scale of the image
  */
 class JimpImage {
+  #jimp;
+
   /**
    * @param {Jimp} [jimp]
    * @param {number} [scale]
@@ -139,7 +141,6 @@ class JimpImage {
   /**
    * Draws Bezier curve.
    * @param {BezierCurve}[bezierCurve]
-   * @param {JimpImage}[edgeMatrix]
    * @param {int}[scale]
    * @param {int}[points]
    * @param {int}[color]
@@ -147,7 +148,6 @@ class JimpImage {
    */
   drawBezier({
     bezierCurve,
-    edgeMatrix,
     scale = 1,
     color = white,
     lerpColor = false,
@@ -156,30 +156,6 @@ class JimpImage {
     for (let t = 0; t < 1; t += step) {
       let [x, y] = bezierCurve.getPoint(t);
       if (!isNaN(x) && !isNaN(y)) {
-        // let underColor = edgeMatrix.getColorOnPosition(
-        //   x,
-        //   y,
-        //   bezierCurve.thickness
-        // );
-        // if (underColor / white === 1) {
-        //   this.drawPoint({
-        //     x: x * scale,
-        //     y: y * scale,
-        //     color: red,
-        //     thickness: bezierCurve.thickness * scale,
-        //     lerpColor,
-        //   });
-        // }
-        // if (underColor / black === 1) {
-        //   this.drawPoint({
-        //     x: x * scale,
-        //     y: y * scale,
-        //     color: blue,
-        //     thickness: bezierCurve.thickness * scale,
-        //     lerpColor,
-        //   });
-        // }
-
         this.drawPoint({
           x: x * scale,
           y: y * scale,
@@ -211,6 +187,24 @@ class JimpImage {
       new Jimp(
         edgeMatrix.width * scale,
         edgeMatrix.height * scale,
+        transparent,
+        (err, image) => image
+      ),
+      scale
+    );
+  }
+
+  /**
+   * @param {int} width
+   * @param {int} height
+   * @param {int} scale
+   * @returns {JimpImage}
+   */
+  static createFromParams(width, height, scale = 1) {
+    return new JimpImage(
+      new Jimp(
+        width * scale,
+        height * scale,
         transparent,
         (err, image) => image
       ),

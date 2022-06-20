@@ -2,7 +2,7 @@ const { Cauldron, PopulationConfig, fitness } = require("../genetics");
 const { logger } = require("../utils");
 const { Picture } = require("../entities");
 const { MiddlePointsFitnessFunction } = require("../genetics/fitness");
-const ShapeBuilderOptions = require("./ShapeBuilderOptions");
+const ShapeBuilderOptions = require("./options/ShapeBuilderOptions");
 
 /**
  * @property {string} shapeName - a shape name used in logs
@@ -17,6 +17,7 @@ const ShapeBuilderOptions = require("./ShapeBuilderOptions");
  * @property {JimpImage} edgeMatrix - edge matrix JimpImage object
  * @property {JimpImage} binaryImage - binary image JimpImage object
  * @property {[{func: fitness.IFitnessFunction, weight: number}]} fitnessFuncs - number of mixes in cauldron
+ * @property {ShapeBuilderOptions} options - shape builder options
  */
 class BaseShapeBuilder {
   shapeName = "BaseBuilder";
@@ -30,12 +31,14 @@ class BaseShapeBuilder {
   maxMixingTime = 0;
   picture;
   edgeMatrix;
-  binaryImage
+  binaryImage;
+  options;
 
   /**
    * @param {ShapeBuilderOptions} shapeBuilderOptions
    */
   constructor(shapeBuilderOptions) {
+    this.options = shapeBuilderOptions;
     this.imageUrl = shapeBuilderOptions.imageUrl;
     this.populationConfig = shapeBuilderOptions.populationConfig;
   }
