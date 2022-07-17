@@ -13,5 +13,7 @@ import * as utils from "./utils/index.js";
 /* Image builder */
 import * as imageBuilder from "./image-builder/index.js";
 
-export const GPG = { entities, functions, utils, genetics, imageBuilder };
+export {
+  genetics, entities, functions, utils, imageBuilder
+}
 
