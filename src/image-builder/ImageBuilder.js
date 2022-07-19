@@ -70,9 +70,9 @@ export default class ImageBuilder {
     await image.writeImage(path);
   }
 
-  async getBase64(path, scale = 1) {
+  async getBase64(scale = 1) {
     /** @type {JimpImage} */
     const image = await this.getImage(scale);
-    return await image.toBase64();
+    return image.toBase64();
   }
 }

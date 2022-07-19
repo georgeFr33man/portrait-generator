@@ -181,9 +181,12 @@ export default class JimpImage {
   }
 
   toBase64() {
-    return this.image.getBase64(this.image.getMIME(), (err, res) => {
-      return res;
+    let base64 = "";
+    this.image.getBase64(this.image.getMIME(), (err, res) => {
+      base64 = res;
     });
+
+    return base64;
   }
 
   /**
