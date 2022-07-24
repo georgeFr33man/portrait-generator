@@ -1,6 +1,6 @@
 import Jimp from "jimp";
-import {rand} from "./../functions/mathFunctions.js";
-import {hexToDec} from "./../functions/converters.js";
+import {rand} from "../functions/mathFunctions";
+import {hexToDec} from "../functions/converters";
 
 export const white = Jimp.rgbaToInt(255, 255, 255, 255);
 export const black = Jimp.rgbaToInt(0, 0, 0, 255);
@@ -35,6 +35,7 @@ function getWithAlpha(color, alpha = 255) {
  * @returns {number}
  */
 function getColor(hex) {
+  hex = hex.replace(/#/gi, '');
   if (hex.length === 6) {
     hex += "ff";
   }

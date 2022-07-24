@@ -37,10 +37,10 @@ export default class Cauldron {
 
   /**
    * Start mixing algorithm for given number of mixes or mixing time.
-   * @param {JimpImage}[edgeMatrix]
-   * @param {[{func: Function, weight: number}]}[fitnessFuncs]
-   * @param {int}[nofMixes]
-   * @param {int}[maxMixingTime] - In milliseconds
+   * @param {JimpImage} edgeMatrix
+   * @param {[{func: Function, weight: number}]} fitnessFuncs
+   * @param {int} nofMixes
+   * @param {int} maxMixingTime - In milliseconds
    */
   doMixing({ edgeMatrix, fitnessFuncs, nofMixes = 1000, maxMixingTime = 0 }) {
     let fitnessFunction = this.#createFitnessFunction(fitnessFuncs);
@@ -106,16 +106,16 @@ export default class Cauldron {
    */
   mutateByBits(agent) {
     let gr = agent.geneticRepresentation.split("");
-    gr.map((bit, index) => {
+    gr.map((bit) => {
       // do mutation
-      let factor = agent.fitnessScore === 0 ? 1 : agent.fitnessScore;
-      if (this.negative) {
-        factor = agent.fitnessScore === 0 ? 1 : 1 / agent.fitnessScore;
-      }
+      let doMutation = this.mutationChance;
+      // let factor = agent.fitnessScore === 0 ? 1 : agent.fitnessScore;
+      // if (this.negative) {
+      //   factor = agent.fitnessScore === 0 ? 1 : 1 / agent.fitnessScore;
+      // }
       // let doMutation =
       //   rand(1) >=
       //   (this.mutationChance * factor) / ((index % ALLELE_LENGTH) + 1) / 2;
-      let doMutation = this.mutationChance;
       //   rand(1) >=
       //   (this.mutationChance * factor) / ((index % ALLELE_LENGTH) + 1) / 2;
       if (doMutation) {

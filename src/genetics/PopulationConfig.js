@@ -10,9 +10,10 @@
  * @property {int} size - the population size
  */
 export default class PopulationConfig {
+  xMax = 0;
+  yMax = 0;
+
   /**
-   * @param {int}[xMax]
-   * @param {int}[yMax]
    * @param {int}[nofPointsMax]
    * @param {int}[nofPointsMin]
    * @param {int}[thicknessMax]
@@ -21,17 +22,13 @@ export default class PopulationConfig {
    * @param {int}[size]
    */
   constructor({
-    xMax,
-    yMax,
-    nofPointsMax = 2,
-    nofPointsMin = 1,
-    thicknessMax = 1,
-    thicknessMin = 1,
-    bezzierPoints = 100,
-    size = 100,
+    nofPointsMax,
+    nofPointsMin,
+    thicknessMax,
+    thicknessMin,
+    bezzierPoints,
+    size,
   }) {
-    this.xMax = xMax;
-    this.yMax = yMax;
     this.nofPointsMax = nofPointsMax;
     this.nofPointsMin = nofPointsMin;
     this.thicknessMax = thicknessMax;

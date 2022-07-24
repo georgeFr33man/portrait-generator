@@ -41,7 +41,7 @@ export default class BaseShapeBuilder {
   constructor(shapeBuilderOptions) {
     this.options = shapeBuilderOptions;
     this.imageUrl = shapeBuilderOptions.imageUrl;
-    this.populationConfig = shapeBuilderOptions.populationConfig;
+    this.populationConfig = this.mergePopulationConfigWithDefault(shapeBuilderOptions.populationConfig);
   }
 
   /**
@@ -58,20 +58,26 @@ export default class BaseShapeBuilder {
   async buildShape() {
     logger.log("Building shape: " + this.shapeName);
 
-    logger.log("Tworzenie matrycy krawędzi");
+    logger.log("Creating edge matrix");
     this.edgeMatrix = await this.picture.edgeMatrix;
     this.binaryImage = await this.picture.binaryImage;
 
     this.populationConfig.xMax = this.binaryImage.width;
     this.populationConfig.yMax = this.binaryImage.height;
 
-    logger.log("Usuwanie szumów");
-    this.edgeMatrix.flattenImage(0.8);
-    this.binaryImage.flattenImage(0.8);
+    logger.log("Removing noise");
+    const precisionForFlatteningImages = 0.8;
+    this.edgeMatrix.flattenImage(precisionForFlatteningImages);
+    this.binaryImage.flattenImage(precisionForFlatteningImages);
 
-    const cauldron = new Cauldron(this.populationConfig, this.negative, this.crossOverChance, this.mutationChance);
+    const cauldron = new Cauldron(
+      this.populationConfig,
+      this.negative,
+      this.crossOverChance,
+      this.mutationChance,
+    );
 
-    logger.log("Miksowanie.");
+    logger.log("Mixing...");
     cauldron.doMixing({
       edgeMatrix: this.edgeMatrix,
       fitnessFuncs: this.fitnessFuncs,
@@ -80,5 +86,38 @@ export default class BaseShapeBuilder {
     });
 
     return cauldron;
+  }
+
+  /**
+   * Sets default config values if they are not present.
+   * @param {PopulationConfig} populationConfig
+   */
+  mergePopulationConfigWithDefault(populationConfig) {
+    const defaultConfig = this.getDefaultPopulationConfig();
+    if (!populationConfig) {
+      return defaultConfig;
+    }
+
+    Object.keys(defaultConfig).forEach(key => {
+      if (!populationConfig[key]) {
+        populationConfig[key] = defaultConfig[key];
+      }
+    })
+
+    return populationConfig;
+  }
+
+  /**
+   * @return {PopulationConfig} - A default population config.
+   */
+  getDefaultPopulationConfig() {
+    return new PopulationConfig({
+      nofPointsMax: 2,
+      nofPointsMin: 1,
+      thicknessMax: 1,
+      thicknessMin: 1,
+      bezzierPoints: 100,
+      size: 100,
+    });
   }
 }
